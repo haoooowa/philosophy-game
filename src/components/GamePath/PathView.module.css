@@ -1,317 +1,575 @@
-/* ======== Full-screen layout ======== */
-.screen {
+/* =================================================================
+   SCENE: Sky gradient with atmospheric depth
+   ================================================================= */
+.world {
   display: flex;
   flex-direction: column;
   height: 100vh;
   max-width: 480px;
   margin: 0 auto;
   overflow: hidden;
-  background: var(--color-bg);
+  position: relative;
+  background: linear-gradient(175deg,
+    #1a1a2e 0%,       /* deep night */
+    #16213e 8%,        /* dark blue */
+    #3b5998 18%,       /* mid blue */
+    #7ba5d6 28%,       /* light blue */
+    #c4dff0 38%,       /* pale blue */
+    #fef9e7 55%,       /* warm dawn */
+    #e8f5e9 70%,       /* soft green */
+    #c8e6c9 100%);     /* meadow */
 }
 
-/* ======== Top bar ======== */
+/* =================================================================
+   CLOUDS
+   ================================================================= */
+.cloud {
+  position: absolute;
+  z-index: 1;
+  animation: cloudDrift 30s linear infinite;
+}
+
+.cloudPuff,
+.cloudPuff2,
+.cloudPuff3 {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  box-shadow:
+    0 2px 20px rgba(255,255,255,0.3),
+    inset 0 -4px 10px rgba(0,0,0,0.04);
+}
+
+.cloudPuff  { width: 60px; height: 35px; top: 0; left: 0; }
+.cloudPuff2 { width: 45px; height: 28px; top: 8px; left: 20px; }
+.cloudPuff3 { width: 50px; height: 30px; top: -4px; left: 35px; }
+
+@keyframes cloudDrift {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(60px); }
+}
+
+/* =================================================================
+   STARS
+   ================================================================= */
+.star {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  z-index: 1;
+  animation: twinkle 2s ease-in-out infinite;
+  box-shadow: 0 0 4px 1px rgba(255,255,255,0.5);
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.4); }
+}
+
+/* =================================================================
+   HILLS (foreground)
+   ================================================================= */
+.hills {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hill1, .hill2, .hill3 {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.hill1 {
+  bottom: -30%;
+  left: -40%;
+  width: 140%;
+  height: 60%;
+  background: linear-gradient(180deg, #a8d8a0 0%, #7cb878 30%, #5a9e54 100%);
+  box-shadow: inset 0 10px 30px rgba(255,255,255,0.15);
+}
+
+.hill2 {
+  bottom: -20%;
+  left: -20%;
+  width: 120%;
+  height: 45%;
+  background: linear-gradient(180deg, #b8e0b0 0%, #8cc888 40%, #6aaa62 100%);
+  box-shadow: inset 0 8px 24px rgba(255,255,255,0.12);
+}
+
+.hill3 {
+  bottom: -10%;
+  right: -30%;
+  width: 100%;
+  height: 35%;
+  background: linear-gradient(180deg, #c8e8c0 0%, #98d090 50%, #78b870 100%);
+  box-shadow: inset 0 6px 18px rgba(255,255,255,0.1);
+}
+
+/* =================================================================
+   GREEK COLUMNS
+   ================================================================= */
+.columnLeft, .columnRight {
+  position: absolute;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.columnLeft  { left: 8px; }
+.columnRight { right: 8px; }
+
+.columnBase, .columnCapital {
+  width: 24px;
+  height: 10px;
+  background: linear-gradient(180deg, #e8e0d8, #d4ccc0);
+  border-radius: 3px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.5);
+}
+
+.columnShaft {
+  width: 14px;
+  height: 60px;
+  background: linear-gradient(90deg, #e0d8cc, #f0e8e0 20%, #f5efe8 50%, #e8e0d4 80%, #d8d0c0);
+  border-radius: 2px;
+  box-shadow:
+    2px 0 6px rgba(0,0,0,0.08),
+    inset 1px 0 2px rgba(255,255,255,0.6),
+    inset -1px 0 2px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+.columnShaft::before,
+.columnShaft::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(0,0,0,0.08);
+}
+
+.columnShaft::before { top: 20px; }
+.columnShaft::after  { top: 40px; }
+
+/* =================================================================
+   MARBLE PEDESTAL + OWL
+   ================================================================= */
+.pedestalWrap {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 8px 0 12px;
+  z-index: 2;
+}
+
+.pedestal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pedestalTop {
+  width: 120px;
+  height: 10px;
+  background: linear-gradient(180deg, #f5efe8, #e8e0d4);
+  border-radius: 3px 3px 0 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.pedestalBody {
+  width: 100px;
+  height: 16px;
+  background: linear-gradient(90deg, #e8e0d4, #f5efe8 20%, #faf6f0 50%, #f0e8dc 80%, #e0d8cc);
+  box-shadow:
+    inset 2px 0 4px rgba(255,255,255,0.4),
+    inset -2px 0 4px rgba(0,0,0,0.06);
+}
+
+.pedestalBottom {
+  width: 130px;
+  height: 8px;
+  background: linear-gradient(180deg, #e8e0d4, #d8d0c0);
+  border-radius: 0 0 3px 3px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.12), inset 0 -1px 2px rgba(0,0,0,0.06);
+}
+
+.owlOnPedestal {
+  position: absolute;
+  bottom: 26px;
+}
+
+/* =================================================================
+   TOP BAR
+   ================================================================= */
 .topBar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 16px;
+  padding: 14px 18px 8px;
+  gap: 8px;
   flex-shrink: 0;
+  position: relative;
+  z-index: 3;
 }
 
-.heartsWrap {
-  transform: scale(0.85);
-}
-
-/* XP ring */
-.xpRing {
+.xpBadge {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.xpLevel {
+.xpNum {
   position: absolute;
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 900;
-  color: #FFB800;
+  color: #C8960C;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-/* ======== Owl area ======== */
-.owlArea {
-  display: flex;
-  justify-content: center;
-  padding: 0 0 4px;
+/* =================================================================
+   PROGRESS
+   ================================================================= */
+.progressStrip {
+  padding: 0 18px 6px;
   flex-shrink: 0;
+  position: relative;
+  z-index: 2;
 }
 
-/* ======== Progress ======== */
-.progressSection {
-  padding: 0 24px 8px;
-  flex-shrink: 0;
-}
-
-.progressBarOuter {
-  height: 10px;
-  background: #E8DDD2;
-  border-radius: 5px;
+.progressTrack {
+  height: 8px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 4px;
   overflow: hidden;
   margin-bottom: 4px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);
 }
 
-.progressBarInner {
+.progressFill {
   height: 100%;
-  background: linear-gradient(90deg, #58CC02, #8FE048);
-  border-radius: 5px;
+  background: linear-gradient(90deg, #58CC02, #8CE048);
+  border-radius: 4px;
   transition: width 0.8s var(--ease-out);
+  box-shadow: 0 0 10px rgba(88,204,2,0.4);
 }
 
-.progressStats {
+.progressNums {
   display: flex;
   justify-content: space-between;
-  font-size: 0.7rem;
-  color: var(--color-text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.7);
 }
 
-.progressStats strong {
-  color: var(--color-text);
-  font-weight: 800;
+.progressNums span {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
 }
 
-/* ======== Scrollable path ======== */
+.progressNums small { font-size: 0.58rem; opacity: 0.6; }
+
+/* =================================================================
+   CHAPTER TABS
+   ================================================================= */
+.chapterTabs {
+  display: flex;
+  gap: 6px;
+  padding: 4px 18px 10px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  z-index: 2;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.chapterTabs::-webkit-scrollbar { display: none; }
+
+.chapterTab {
+  flex-shrink: 0;
+  padding: 5px 14px;
+  border-radius: 99px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(8px);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.8);
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.chapterTabActive {
+  background: rgba(255,255,255,0.8);
+  color: #2B1F14;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.chapterTabDone { opacity: 0.5; }
+
+/* =================================================================
+   PATH
+   ================================================================= */
 .pathScroll {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 8px 0 60px;
+  padding: 0 0 100px;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  position: relative;
+  z-index: 2;
 }
 .pathScroll::-webkit-scrollbar { display: none; }
 
 .pathTrack {
   position: relative;
-  min-height: 1400px;
+  min-height: 2200px;
   width: 100%;
 }
 
-/* Road background */
-.road {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 120px;
-  transform: translateX(-50%);
-  background: linear-gradient(to bottom,
-    rgba(255,107,53,0.04) 0%,
-    rgba(255,184,0,0.04) 50%,
-    rgba(88,204,2,0.04) 100%);
-  border-left: 2px dashed rgba(0,0,0,0.06);
-  border-right: 2px dashed rgba(0,0,0,0.06);
-  pointer-events: none;
-}
-
-/* ======== Node wrapper ======== */
-.nodeWrapper {
+/* =================================================================
+   NODE WRAPPER
+   ================================================================= */
+.nodeWrap {
   position: absolute;
   left: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: opacity 0.4s ease, transform 0.5s var(--ease-out), filter 0.4s ease;
-  pointer-events: auto;
+  gap: 8px;
+  transition: opacity 0.5s ease, transform 0.5s var(--ease-out), filter 0.5s ease;
 }
 
-.inView {
-  opacity: 1;
-  filter: none;
-}
+.inView  { opacity: 1; filter: none; }
+.outView { opacity: 0.06; filter: blur(4px); pointer-events: none; }
 
-.outView {
-  opacity: 0.1;
-  filter: blur(2px);
-  pointer-events: none;
-}
-
-/* ======== Chapter sign ======== */
-.chapterSign {
+/* =================================================================
+   CHAPTER BANNER
+   ================================================================= */
+.banner {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 14px;
+  padding: 5px 16px;
   border-radius: 99px;
-  border: 2px solid;
-  background: #fff;
-  font-size: 0.65rem;
+  border: 1.5px solid;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  font-size: 0.6rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   color: var(--color-text);
-  margin-bottom: 12px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 
-.chapterSignDot {
-  width: 7px;
-  height: 7px;
+.bannerDot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
 }
 
-/* ======== Connector ======== */
-.connector {
-  width: 2px;
-  height: 20px;
-  background: var(--color-border);
-  margin-bottom: 4px;
-}
-
-/* ======== Level node ======== */
+/* =================================================================
+   LEVEL NODE — 3D sphere with materials
+   ================================================================= */
 .node {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  border: 3px solid var(--color-border);
-  background: #fff;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s var(--ease-bounce);
   cursor: pointer;
   position: relative;
-  box-shadow: 0 4px 0 rgba(0,0,0,0.08);
+  transition: all 0.4s var(--ease-bounce);
+  /* Neutral state */
+  background:
+    radial-gradient(circle at 35% 30%, #ffffff, #f0ebe4 40%, #e0d8cc 100%);
+  box-shadow:
+    0 6px 20px rgba(0,0,0,0.12),
+    inset 0 -3px 6px rgba(0,0,0,0.06),
+    inset 0 2px 4px rgba(255,255,255,0.6);
 }
 
 .node:hover:not(:disabled) {
-  transform: scale(1.12) !important;
+  transform: scale(1.14);
 }
 
 .node:active:not(:disabled) {
-  transform: scale(0.94) !important;
+  transform: scale(0.92);
 }
 
-.node:disabled {
-  cursor: default;
+/* Glossy specular highlight */
+.nodeShine {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  right: 12px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center,
+    rgba(255,255,255,0.6) 0%,
+    rgba(255,255,255,0.1) 100%);
+  pointer-events: none;
 }
 
-/* Inner content */
-.nodeInner {
+.nodeFace {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
+  position: relative;
+  z-index: 1;
 }
 
-.nodeStar {
+.nodeStars {
   font-size: 1rem;
-  color: var(--color-gold);
+  color: #C8960C;
   font-weight: 900;
   letter-spacing: -2px;
+  text-shadow: 0 1px 3px rgba(200,150,12,0.3);
 }
 
 .nodeGo {
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 900;
-  color: var(--color-primary);
-  letter-spacing: -0.02em;
+  color: #FF6B35;
+  text-shadow: 0 1px 2px rgba(255,107,53,0.3);
+  animation: goBounce 1.5s ease-in-out infinite;
 }
 
-.nodeWait {
-  font-size: 0.7rem;
-  color: var(--color-text-muted);
-  font-weight: 700;
+.nodeId {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #9C8C7C;
 }
 
-/* Node states */
+/* ---- Gold (3-star complete) ---- */
 .nodeGold {
-  border-color: var(--color-gold);
-  background: var(--color-gold-light);
-  box-shadow: 0 4px 0 rgba(255,184,0,0.2);
+  background:
+    radial-gradient(circle at 35% 30%, #fffef5, #fff3c0 40%, #e8d070 100%);
+  box-shadow:
+    0 6px 24px rgba(200,160,50,0.3),
+    0 0 0 5px rgba(255,200,80,0.12),
+    inset 0 -3px 6px rgba(180,130,20,0.1),
+    inset 0 2px 4px rgba(255,255,255,0.5);
 }
 
+/* ---- Green (completed) ---- */
 .nodeDone {
-  border-color: var(--color-success);
-  background: var(--color-success-light);
-  box-shadow: 0 4px 0 rgba(88,204,2,0.2);
+  background:
+    radial-gradient(circle at 35% 30%, #f8fff5, #d8f0c8 40%, #a8d888 100%);
+  box-shadow:
+    0 6px 20px rgba(100,180,60,0.25),
+    0 0 0 4px rgba(120,200,80,0.1),
+    inset 0 -3px 6px rgba(80,140,40,0.1),
+    inset 0 2px 4px rgba(255,255,255,0.5);
 }
 
+/* ---- Current (pulsing glow) ---- */
 .nodeNow {
-  border-color: var(--color-primary);
-  background: #fff;
-  transform: scale(1.2);
-  box-shadow: 0 0 0 10px rgba(255,107,53,0.08), 0 4px 0 rgba(255,107,53,0.2);
-  animation: nodePulse 2s ease-in-out infinite;
+  width: 74px;
+  height: 74px;
+  background:
+    radial-gradient(circle at 35% 30%, #ffffff, #fff5ee 35%, #ffe0cc 100%);
+  box-shadow:
+    0 10px 40px rgba(255,107,53,0.35),
+    0 0 0 8px rgba(255,107,53,0.1),
+    0 0 60px rgba(255,107,53,0.12),
+    inset 0 -4px 8px rgba(200,80,30,0.08),
+    inset 0 2px 6px rgba(255,255,255,0.6);
+  animation: currentGlow 2.2s ease-in-out infinite;
 }
 
-.nodeNow:hover:not(:disabled) {
-  transform: scale(1.28) !important;
+.nodeNow .nodeGo {
+  font-size: 0.95rem;
 }
 
+/* ---- Locked ---- */
 .nodeLock {
-  opacity: 0.35;
+  background: rgba(255,255,255,0.2);
   box-shadow: none;
+  opacity: 0.35;
+  cursor: default;
 }
+.nodeLock .nodeShine { display: none; }
 
-/* Node name label */
-.nodeName {
-  margin-top: 6px;
-  font-size: 0.65rem;
+/* ---- Label ---- */
+.nodeLabel {
+  font-size: 0.6rem;
   font-weight: 700;
-  color: var(--color-text-secondary);
+  color: rgba(255,255,255,0.7);
   text-align: center;
-  max-width: 90px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 80px;
+  line-height: 1.3;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-/* ======== Bottom bar ======== */
+/* =================================================================
+   BOTTOM BAR
+   ================================================================= */
 .bottomBar {
   display: flex;
-  border-top: 2px solid var(--color-border-light);
-  background: #fff;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(0,0,0,0.05);
   flex-shrink: 0;
   padding-bottom: env(safe-area-inset-bottom, 0);
+  position: relative;
+  z-index: 3;
 }
 
-.bottomTab {
+.tab {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
   padding: 8px 0;
-  font-size: 0.65rem;
+  font-size: 0.58rem;
   font-weight: 700;
-  color: var(--color-text-muted);
-  transition: color 0.2s ease;
+  color: #B8A89C;
+  letter-spacing: 0.02em;
 }
 
-.bottomTabActive {
-  color: var(--color-primary);
+.tabOn {
+  color: #FF6B35;
 }
 
-.bottomIcon {
-  font-size: 1.1rem;
-  font-weight: 900;
-}
-
-/* ======== Animations ======== */
-@keyframes nodePulse {
-  0%, 100% { box-shadow: 0 0 0 10px rgba(255,107,53,0.08), 0 4px 0 rgba(255,107,53,0.2); }
-  50% { box-shadow: 0 0 0 18px rgba(255,107,53,0), 0 4px 0 rgba(255,107,53,0.2); }
-}
-
-/* ======== Responsive ======== */
-@media (max-width: 400px) {
-  .node {
-    width: 48px;
-    height: 48px;
+/* =================================================================
+   ANIMATIONS
+   ================================================================= */
+@keyframes currentGlow {
+  0%, 100% {
+    box-shadow:
+      0 10px 40px rgba(255,107,53,0.35),
+      0 0 0 8px rgba(255,107,53,0.1),
+      0 0 60px rgba(255,107,53,0.12);
   }
-  .nodeNow {
-    transform: scale(1.15);
+  50% {
+    box-shadow:
+      0 10px 50px rgba(255,107,53,0.5),
+      0 0 0 18px rgba(255,107,53,0),
+      0 0 80px rgba(255,107,53,0.2);
   }
+}
+
+@keyframes goBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
 }

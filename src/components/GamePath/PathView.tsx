@@ -11,7 +11,6 @@ interface Props {
   onSelectLevel: (levelId: number) => void;
 }
 
-// Build a winding path: 9 chapters, each is a row of 9 levels
 function buildSnake() {
   const rows: { levelId: number; chapterId: number; col: number; row: number }[] = [];
   for (let ch = 1; ch <= 9; ch++) {
@@ -25,6 +24,23 @@ function buildSnake() {
   return rows;
 }
 
+// Decorative cloud positions
+const CLOUDS = [
+  { top: '6%', left: '5%', scale: 0.7, delay: 0 },
+  { top: '10%', left: '55%', scale: 1, delay: 2 },
+  { top: '3%', left: '30%', scale: 0.5, delay: 4 },
+  { top: '8%', left: '75%', scale: 0.8, delay: 1 },
+  { top: '14%', left: '15%', scale: 0.6, delay: 3 },
+];
+
+// Star positions for night sky sparkle
+const STARS = Array.from({ length: 12 }, (_, i) => ({
+  top: `${2 + Math.random() * 18}%`,
+  left: `${5 + i * 7.5}%`,
+  delay: Math.random() * 3,
+  size: 1 + Math.random() * 2,
+}));
+
 export default function PathView({ onSelectLevel }: Props) {
   const {
     isLevelUnlocked, isLevelCompleted, getStars,
@@ -36,7 +52,6 @@ export default function PathView({ onSelectLevel }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const currentRef = useRef<HTMLDivElement>(null);
 
-  // Find current (first unlocked & uncompleted)
   const currentLevelId = useMemo(() => {
     for (const lv of ALL_LEVELS) {
       if (isLevelUnlocked(lv.id) && !isLevelCompleted(lv.id)) return lv.id;
@@ -44,7 +59,6 @@ export default function PathView({ onSelectLevel }: Props) {
     return 81;
   }, [isLevelUnlocked, isLevelCompleted]);
 
-  // Auto-scroll to current level
   useEffect(() => {
     if (currentRef.current && scrollRef.current) {
       const c = scrollRef.current;
@@ -55,17 +69,8 @@ export default function PathView({ onSelectLevel }: Props) {
 
   const completedCount = ALL_LEVELS.filter(l => isLevelCompleted(l.id)).length;
   const totalStars = ALL_LEVELS.reduce((s, l) => s + getStars(l.id), 0);
-  const totalXP = xp;
-  const xpToNext = getXPToNextLevel();
-  const xpPercent = Math.min((totalXP / xpToNext) * 100, 100);
+  const xpPercent = Math.min((xp / getXPToNextLevel()) * 100, 100);
 
-  const handleClick = (levelId: number) => {
-    if (!isLevelUnlocked(levelId)) return;
-    if (hearts <= 0) { setOwlMood('sad', 'Out of hearts!'); return; }
-    onSelectLevel(levelId);
-  };
-
-  // Group nodes by chapter for banners
   const chapterStarts = new Set<number>();
   for (let ch = 1; ch <= 9; ch++) {
     const first = ALL_LEVELS.filter(l => l.chapter === ch).sort((a, b) => a.id - b.id)[0];
@@ -73,46 +78,104 @@ export default function PathView({ onSelectLevel }: Props) {
   }
 
   return (
-    <div className={styles.screen}>
-      {/* Top status bar */}
-      <div className={styles.topBar}>
-        <StreakBadge days={streak} />
-        <div className={styles.heartsWrap}>
-          <HeartsBar maxHearts={maxHearts} currentHearts={hearts} />
+    <div className={styles.world}>
+      {/* ====== SKY & ENVIRONMENT ====== */}
+      <div className={styles.sky}>
+        {/* Clouds */}
+        {CLOUDS.map((c, i) => (
+          <div key={i} className={styles.cloud} style={{ top: c.top, left: c.left, transform: `scale(${c.scale})`, animationDelay: `${c.delay}s` }}>
+            <div className={styles.cloudPuff} />
+            <div className={styles.cloudPuff2} />
+            <div className={styles.cloudPuff3} />
+          </div>
+        ))}
+
+        {/* Stars */}
+        {STARS.map((s, i) => (
+          <div key={i} className={styles.star} style={{ top: s.top, left: s.left, animationDelay: `${s.delay}s`, width: `${s.size * 3}px`, height: `${s.size * 3}px` }} />
+        ))}
+
+        {/* Hills */}
+        <div className={styles.hills}>
+          <div className={styles.hill1} />
+          <div className={styles.hill2} />
+          <div className={styles.hill3} />
         </div>
-        <div className={styles.xpRing}>
-          <svg width="40" height="40" viewBox="0 0 40 40">
-            <circle cx="20" cy="20" r="16" fill="none" stroke="#E8DDD2" strokeWidth="4" />
-            <circle cx="20" cy="20" r="16" fill="none" stroke="#FFB800" strokeWidth="4"
-              strokeDasharray={`${xpPercent * 1.005} ${100 - xpPercent}`}
-              strokeLinecap="round" transform="rotate(-90 20 20)" />
-          </svg>
-          <span className={styles.xpLevel}>{playerLevel}</span>
+
+        {/* Greek columns */}
+        <div className={styles.columnLeft}>
+          <div className={styles.columnBase} />
+          <div className={styles.columnShaft} />
+          <div className={styles.columnCapital} />
+        </div>
+        <div className={styles.columnRight}>
+          <div className={styles.columnBase} />
+          <div className={styles.columnShaft} />
+          <div className={styles.columnCapital} />
         </div>
       </div>
 
-      {/* Owl mascot */}
-      <div className={styles.owlArea}>
-        <OwlMascot mood={owlMood} size="lg" message={owlMessage || undefined} />
+      {/* ====== UI OVERLAY ====== */}
+      {/* Top bar */}
+      <div className={styles.topBar}>
+        <StreakBadge days={streak} />
+        <HeartsBar maxHearts={maxHearts} currentHearts={hearts} />
+        <div className={styles.xpBadge}>
+          <svg width="34" height="34" viewBox="0 0 34 34">
+            <circle cx="17" cy="17" r="13" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="3.5" />
+            <circle cx="17" cy="17" r="13" fill="none" stroke="#FFD700" strokeWidth="3.5"
+              strokeDasharray={`${xpPercent * 0.816} ${81.6 - xpPercent * 0.816}`}
+              strokeLinecap="round" transform="rotate(-90 17 17)" />
+          </svg>
+          <span className={styles.xpNum}>{playerLevel}</span>
+        </div>
+      </div>
+
+      {/* Marble pedestal + Owl */}
+      <div className={styles.pedestalWrap}>
+        <div className={styles.pedestal}>
+          <div className={styles.pedestalTop} />
+          <div className={styles.pedestalBody} />
+          <div className={styles.pedestalBottom} />
+        </div>
+        <div className={styles.owlOnPedestal}>
+          <OwlMascot mood={owlMood} size="lg" message={owlMessage || undefined} />
+        </div>
       </div>
 
       {/* Progress */}
-      <div className={styles.progressSection}>
-        <div className={styles.progressBarOuter}>
-          <div className={styles.progressBarInner} style={{ width: `${(completedCount / 81) * 100}%` }} />
+      <div className={styles.progressStrip}>
+        <div className={styles.progressTrack}>
+          <div className={styles.progressFill} style={{ width: `${(completedCount / 81) * 100}%` }} />
         </div>
-        <div className={styles.progressStats}>
-          <span><strong>{completedCount}</strong> / 81 completed</span>
-          <span><strong>{totalStars}</strong> / 243 stars</span>
+        <div className={styles.progressNums}>
+          <span>{completedCount}<small>/81</small></span>
+          <span>{totalStars}<small>/243</small></span>
         </div>
       </div>
 
-      {/* Path - scrollable */}
+      {/* Chapter tabs */}
+      <div className={styles.chapterTabs}>
+        {CHAPTERS.map(ch => {
+          const chLevels = ALL_LEVELS.filter(l => l.chapter === ch.id);
+          const chDone = chLevels.filter(l => isLevelCompleted(l.id)).length;
+          const isActive = currentLevelId >= chLevels[0].id && currentLevelId <= chLevels[8].id;
+          return (
+            <button
+              key={ch.id}
+              className={`${styles.chapterTab} ${isActive ? styles.chapterTabActive : ''} ${chDone === 9 ? styles.chapterTabDone : ''}`}
+              style={isActive ? { borderColor: ch.color } : undefined}
+              type="button"
+            >
+              {ch.title}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Path */}
       <div className={styles.pathScroll} ref={scrollRef}>
         <div className={styles.pathTrack}>
-          {/* Background road */}
-          <div className={styles.road} />
-
           {nodes.map((node) => {
             const level = ALL_LEVELS.find(l => l.id === node.levelId)!;
             const unlocked = isLevelUnlocked(node.levelId);
@@ -122,42 +185,28 @@ export default function PathView({ onSelectLevel }: Props) {
             const isStart = chapterStarts.has(node.levelId);
             const chapter = CHAPTERS[node.chapterId - 1];
 
-            // Snake offset
-            const colOffset = (node.col - 4) * 48;
-            const rowOffset = node.row * 140;
+            const colOffset = (node.col - 4) * 56;
+            const rowOffset = node.row * 220;
 
-            // Visibility
             const idx = ALL_LEVELS.findIndex(l => l.id === node.levelId);
             const curIdx = ALL_LEVELS.findIndex(l => l.id === currentLevelId);
             const dist = Math.abs(idx - curIdx);
-            const inView = dist <= 8;
+            const inView = dist <= 7;
 
             return (
               <div
                 key={node.levelId}
-                className={`${styles.nodeWrapper} ${inView ? styles.inView : styles.outView}`}
-                style={{
-                  transform: `translateX(${colOffset}px)`,
-                  top: `${rowOffset + node.col * 4}px`,
-                }}
+                className={`${styles.nodeWrap} ${inView ? styles.inView : styles.outView}`}
+                style={{ transform: `translateX(${colOffset}px)`, top: `${rowOffset}px` }}
                 ref={isCurrent ? currentRef : undefined}
               >
-                {/* Chapter start banner */}
                 {isStart && (
-                  <div className={styles.chapterSign} style={{ borderColor: chapter.color }}>
-                    <span className={styles.chapterSignDot} style={{ background: chapter.color }} />
-                    {chapter.title}
+                  <div className={styles.banner}>
+                    <span className={styles.bannerDot} style={{ background: chapter.color }} />
+                    <span>{chapter.title}</span>
                   </div>
                 )}
 
-                {/* Connector line to previous */}
-                {idx > 0 && (
-                  <div className={styles.connector} style={{
-                    transform: `rotate(${node.chapterId % 2 === 0 ? '15deg' : '-15deg'})`,
-                  }} />
-                )}
-
-                {/* The node */}
                 <button
                   className={`
                     ${styles.node}
@@ -166,26 +215,27 @@ export default function PathView({ onSelectLevel }: Props) {
                     ${isCurrent ? styles.nodeNow : ''}
                     ${!unlocked ? styles.nodeLock : ''}
                   `}
-                  onClick={() => handleClick(node.levelId)}
+                  onClick={() => {
+                    if (!unlocked) return;
+                    if (hearts <= 0) { setOwlMood('sad', 'No hearts!'); return; }
+                    onSelectLevel(node.levelId);
+                  }}
                   disabled={!unlocked}
                   type="button"
-                  style={isCurrent ? { borderColor: chapter.color } : undefined}
                 >
-                  <span className={styles.nodeInner}>
+                  <span className={styles.nodeFace}>
                     {completed ? (
-                      <span className={styles.nodeStar}>
-                        {'*'.repeat(stars)}
-                      </span>
+                      <span className={styles.nodeStars}>{'*'.repeat(stars)}</span>
                     ) : isCurrent ? (
                       <span className={styles.nodeGo}>GO</span>
                     ) : (
-                      <span className={styles.nodeWait}>{node.levelId}</span>
+                      <span className={styles.nodeId}>{node.levelId}</span>
                     )}
                   </span>
+                  <span className={styles.nodeShine} />
                 </button>
 
-                {/* Label below node */}
-                <span className={styles.nodeName}>{level.title}</span>
+                <span className={styles.nodeLabel}>{level.title}</span>
               </div>
             );
           })}
@@ -194,13 +244,13 @@ export default function PathView({ onSelectLevel }: Props) {
 
       {/* Bottom bar */}
       <div className={styles.bottomBar}>
-        <button className={`${styles.bottomTab} ${styles.bottomTabActive}`}>
-          <span className={styles.bottomIcon}>P</span>
-          <span>Path</span>
+        <button className={`${styles.tab} ${styles.tabOn}`} type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2z"/></svg>
+          Path
         </button>
-        <button className={styles.bottomTab}>
-          <span className={styles.bottomIcon}>S</span>
-          <span>Stats</span>
+        <button className={styles.tab} type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="10" width="4" height="10" rx="1"/><rect x="10" y="6" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="17" rx="1"/></svg>
+          Stats
         </button>
       </div>
     </div>
