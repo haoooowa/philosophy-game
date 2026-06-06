@@ -1,7 +1,10 @@
-.wrapper {
-  max-width: 720px;
+.outer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 480px;
   margin: 0 auto;
-  padding: 20px 24px 64px;
+  overflow: hidden;
 }
 
 /* Top bar */
@@ -9,66 +12,98 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
-  margin-bottom: 20px;
+  padding: 8px 16px;
+  gap: 10px;
   border-bottom: 1px solid var(--color-border-light);
+  flex-shrink: 0;
 }
 
-.topLeft {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.topRight {
-  display: flex;
-  align-items: center;
-}
-
-/* Owl area */
+/* Owl */
 .owlArea {
   display: flex;
   justify-content: center;
-  margin-bottom: 12px;
-  min-height: 100px;
+  padding: 8px 0;
+  min-height: 50px;
+  flex-shrink: 0;
 }
 
-/* Summary */
-.summary {
+/* Progress header */
+.progressHeader {
   text-align: center;
-  margin-bottom: 28px;
+  padding: 4px 0 8px;
+  flex-shrink: 0;
 }
 
-.title {
-  font-size: 1.6rem;
-  letter-spacing: -0.03em;
-  margin-bottom: 2px;
+.progressCount {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text);
 }
 
-.sub {
-  font-size: 0.82rem;
-  color: var(--color-text-muted);
+/* Scrollable path */
+.scrollContainer {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 0 40vh;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-/* Path container */
-.pathContainer {
+.scrollContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.pathTrack {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 40px;
 }
 
-.chapterRow {
+/* Continuous vertical connector */
+.connectorLine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-border);
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+/* Node wrapper */
+.nodeWrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  position: relative;
+  z-index: 1;
+  transform: translateX(var(--node-offset, 0px));
+  transition: opacity 300ms ease, transform 400ms var(--ease-out-expo);
+  margin: 14px 0;
 }
 
-.chapterLabel {
+.nodeHidden {
+  opacity: 0.15;
+  pointer-events: none;
+  transform: translateX(var(--node-offset, 0px)) scale(0.6);
+}
+
+/* Chapter banner */
+.chapterBanner {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 6px;
+  margin-bottom: 8px;
+  padding: 4px 12px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
 }
 
 .chapterDot {
@@ -77,79 +112,99 @@
   border-radius: 50%;
 }
 
-.chapterName {
-  font-size: 0.72rem;
+.chapterLabel {
+  font-size: 0.65rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--color-text-muted);
 }
 
-/* Level nodes row */
-.levelRow {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-  max-width: 100%;
-}
-
-.reversed {
-  flex-direction: row-reverse;
-}
-
-/* Individual level node */
+/* Level node button */
 .node {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 3px;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 2px solid var(--color-border);
+  gap: 14px;
+  width: 240px;
+  padding: 14px 18px;
+  border-radius: var(--radius-xl);
+  border: 1.5px solid var(--color-border);
   background: var(--color-bg-card);
-  transition: all 200ms var(--ease-out-expo);
+  transition: all 250ms var(--ease-out-expo);
   cursor: pointer;
-  position: relative;
-  justify-content: center;
+  text-align: left;
 }
 
 .node:hover:not(:disabled) {
-  transform: scale(1.12);
+  transform: scale(1.04);
+  border-color: var(--color-text);
 }
 
-.nodeInner {
+.node:disabled {
+  cursor: default;
+}
+
+/* Node inner icon */
+.nodeIcon {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
-.nodeStars {
-  font-family: var(--font-serif);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--color-gold);
+  border-radius: 50%;
+  background: var(--color-bg-warm);
+  flex-shrink: 0;
 }
 
 .nodePlay {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--color-accent);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-accent-light);
+  flex-shrink: 0;
 }
 
-.nodeLock {
-  font-size: 0.45rem;
+.nodeDot {
+  font-size: 1.5rem;
   color: var(--color-border);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
+/* Node text label */
 .nodeLabel {
-  position: absolute;
-  bottom: -16px;
-  font-size: 0.58rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nodeNum {
+  font-size: 0.6rem;
   color: var(--color-text-muted);
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.nodeTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Node states */
@@ -165,23 +220,37 @@
 
 .nodeCurrent {
   border-color: var(--color-accent);
-  background: var(--color-accent-light);
-  animation: nodePulse 2s var(--ease-out-expo) infinite;
+  background: var(--color-bg-card);
+  transform: scale(1.08);
+  animation: nodePulse 2.5s var(--ease-out-expo) infinite;
+}
+
+.nodeCurrent:hover:not(:disabled) {
+  transform: scale(1.12);
 }
 
 .nodeLocked {
-  opacity: 0.3;
-  cursor: not-allowed;
+  opacity: 0.4;
 }
 
 @keyframes nodePulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(196, 130, 94, 0); }
-  50% { box-shadow: 0 0 0 6px rgba(196, 130, 94, 0.15); }
+  50% { box-shadow: 0 0 0 8px rgba(196, 130, 94, 0.1); }
 }
 
-/* Connector between rows */
-.connector {
-  display: flex;
-  justify-content: center;
-  margin: 4px 0;
+@media (max-width: 480px) {
+  .outer {
+    max-width: 100%;
+  }
+
+  .node {
+    width: 200px;
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .topBar {
+    padding: 6px 10px;
+    gap: 6px;
+  }
 }
