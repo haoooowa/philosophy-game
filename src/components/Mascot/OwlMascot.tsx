@@ -14,14 +14,8 @@ export default function OwlMascot({
   mood = 'idle',
   size = 'md',
   message,
-  speaking = false,
 }: Props) {
-  const [visible, setVisible] = useState(false);
   const [msgVisible, setMsgVisible] = useState(false);
-
-  useEffect(() => {
-    setVisible(true);
-  }, []);
 
   useEffect(() => {
     if (message) {
@@ -45,7 +39,7 @@ export default function OwlMascot({
                      'M24 56 Q30 60 36 56';
 
   return (
-    <div className={`${styles.container} ${styles[size]} ${visible ? styles.enter : ''}`}>
+    <div className={`${styles.container} ${styles[size]} ${styles.enter}`}>
       {message && (
         <div className={`${styles.bubble} ${msgVisible ? styles.bubbleShow : ''}`}>
           <p>{message}</p>

@@ -4,11 +4,10 @@ import { useGameStore } from '../../store/gameStore';
 import styles from './LevelGrid.module.css';
 
 interface Props {
-  onSelectLevel: (levelId: number) => void;
   onSelectChapter: (chapterId: number) => void;
 }
 
-export default function LevelGrid({ onSelectLevel, onSelectChapter }: Props) {
+export default function LevelGrid({ onSelectChapter }: Props) {
   const { isLevelUnlocked, isLevelCompleted, getStars, getTotalStars, getCompletedCount } = useGameStore();
 
   const chapterGroups = [

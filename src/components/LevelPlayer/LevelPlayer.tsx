@@ -34,7 +34,7 @@ export default function LevelPlayer({ levelId, onBack, onNextLevel }: Props) {
   const chapter = useMemo(() => (level ? getChapterByLevel(level.id) : null), [level]);
   const {
     completeLevel, unlockLevel, hearts, maxHearts,
-    loseHeart, addXP, soundEnabled,
+    loseHeart, soundEnabled,
     owlMood, owlMessage, setOwlMood,
   } = useGameStore();
 

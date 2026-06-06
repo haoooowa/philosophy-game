@@ -9,7 +9,7 @@ import styles from './App.module.css';
 export default function App() {
   const {
     gamePhase, selectedLevel, selectedChapter,
-    setGamePhase, selectLevel, selectChapter,
+    setGamePhase, selectLevel,
     initProgress, setOwlMood,
   } = useGameStore();
 
@@ -17,11 +17,6 @@ export default function App() {
   useEffect(() => {
     initProgress();
   }, [initProgress]);
-
-  const handleSelectChapter = useCallback((chapterId: number) => {
-    selectChapter(chapterId);
-    setGamePhase('chapter-intro');
-  }, [selectChapter, setGamePhase]);
 
   const handleSelectLevel = useCallback((levelId: number) => {
     selectLevel(levelId);

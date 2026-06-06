@@ -1,4 +1,4 @@
-import type { LevelData, LevelResult } from '../types';
+import type { LevelData } from '../types';
 
 interface CheckResult {
   highlightedCorrect: boolean;
