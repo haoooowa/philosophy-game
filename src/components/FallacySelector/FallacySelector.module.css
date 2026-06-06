@@ -1,0 +1,127 @@
+.wrapper {
+  margin-top: 6px;
+}
+
+.title {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 8px;
+}
+
+.btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 14px 10px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  transition: border-color 150ms ease,
+              background 150ms ease;
+  text-align: center;
+  position: relative;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--color-text);
+}
+
+/* Abbreviation icon */
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+  background: var(--color-bg-warm);
+  margin-bottom: 2px;
+}
+
+.selected {
+  border-color: var(--color-text);
+  background: var(--color-bg-warm);
+}
+
+.selected .icon {
+  background: var(--color-text);
+  color: #fff;
+}
+
+.correct {
+  border-color: var(--color-success);
+  background: var(--color-success-light);
+}
+
+.correct .icon {
+  background: var(--color-success);
+  color: #fff;
+}
+
+.wrong {
+  border-color: var(--color-error);
+  background: var(--color-error-light);
+  opacity: 0.75;
+}
+
+.wrong .icon {
+  background: var(--color-error);
+  color: #fff;
+}
+
+.dimmed {
+  opacity: 0.35;
+}
+
+.name {
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.desc {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+/* Result tags */
+.resultTag {
+  position: absolute;
+  top: -6px;
+  right: 6px;
+  font-size: 0.58rem;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--color-success);
+  color: #fff;
+}
+
+.resultTagWrong {
+  background: var(--color-error);
+}
+
+.btn:disabled {
+  cursor: default;
+}

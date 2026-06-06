@@ -1,0 +1,211 @@
+.wrapper {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 16px 24px 56px;
+}
+
+/* Top bar */
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.exitBtn {
+  font-size: 1.5rem;
+  color: var(--color-text-muted);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 150ms ease;
+}
+
+.exitBtn:hover {
+  background: var(--color-bg-warm);
+  color: var(--color-text);
+}
+
+/* Owl spot */
+.owlSpot {
+  display: flex;
+  justify-content: center;
+  min-height: 90px;
+  margin-bottom: 8px;
+}
+
+.error {
+  text-align: center;
+  padding: 80px 24px;
+  color: var(--color-text-secondary);
+}
+
+.error button {
+  margin-top: 16px;
+  padding: 8px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+/* Level header */
+.levelHeader {
+  padding: 28px 28px 24px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-card);
+  margin-bottom: 28px;
+}
+
+.levelMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.chapterTag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.levelId {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.levelTitle {
+  font-size: 1.35rem;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.scenario {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+  font-style: italic;
+}
+
+/* Phase indicator */
+.phaseRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 28px;
+  padding: 0 16px;
+}
+
+.phaseItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.phaseDot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: var(--color-border-light);
+  transition: all 200ms var(--ease-out-expo);
+}
+
+.phaseDone {
+  background: var(--color-text);
+  color: var(--color-bg-card);
+}
+
+.phaseActive {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.phaseLabel {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+.phaseLabelOn {
+  color: var(--color-text);
+}
+
+.phaseLine {
+  width: 28px;
+  height: 1px;
+  background: var(--color-border);
+  margin: 0 8px;
+}
+
+/* Instruction */
+.instruction {
+  text-align: center;
+  padding: 14px 20px;
+  margin-bottom: 16px;
+  background: var(--color-bg-warm);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.instruction strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+/* Bottom actions */
+.bottomActions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.confirmBtn {
+  padding: 10px 28px;
+  border-radius: var(--radius-sm);
+  background: var(--color-text);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.confirmBtn:hover {
+  background: #333;
+}
+
+.confirmBtn:disabled {
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.resetBtn {
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-card);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  border: 1px solid var(--color-border);
+}
+
+.resetBtn:hover {
+  border-color: var(--color-text);
+  color: var(--color-text);
+}

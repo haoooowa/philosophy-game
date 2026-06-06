@@ -1,0 +1,168 @@
+/* ======== CSS Variables / Theme ======== */
+:root {
+  /* Canvas & Surfaces */
+  --color-bg: #F7F6F3;
+  --color-bg-card: #FFFFFF;
+  --color-bg-warm: #F9F7F4;
+
+  /* Text hierarchy */
+  --color-text: #1B1A18;
+  --color-text-secondary: #6B6660;
+  --color-text-muted: #9C9790;
+
+  /* Accent — muted, desaturated */
+  --color-accent: #C4825E;
+  --color-accent-light: #F8EFE9;
+  --color-accent-dark: #A66E4E;
+
+  /* Semantic spot pastels (protocol-aligned) */
+  --color-gold: #C4A148;
+  --color-gold-light: #FBF5E8;
+  --color-success: #56855C;
+  --color-success-light: #EDF4EE;
+  --color-error: #B85658;
+  --color-error-light: #FBEFEF;
+
+  /* Pale pastel tags */
+  --tag-red-bg: #FDEBEC;
+  --tag-red-text: #8E3638;
+  --tag-blue-bg: #E1F3FE;
+  --tag-blue-text: #1F6C9F;
+  --tag-green-bg: #EDF3EC;
+  --tag-green-text: #346538;
+  --tag-amber-bg: #FBF3DB;
+  --tag-amber-text: #8E6400;
+
+  /* Structure */
+  --color-border: #E8E5E0;
+  --color-border-light: #EFEDE9;
+  --color-divider: rgba(0, 0, 0, 0.06);
+
+  /* Typography */
+  --font-serif: 'Lyon Text', 'Newsreader', 'Noto Serif SC', 'STSong', 'SimSun', Georgia, serif;
+  --font-sans: 'SF Pro Display', 'Geist Sans', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+  --font-mono: 'Geist Mono', 'SF Mono', 'JetBrains Mono', 'Consolas', monospace;
+
+  /* Radii — crisp, never pill-shaped for large surfaces */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition: 200ms var(--ease-out-expo);
+}
+
+/* ======== Reset & Base ======== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+  letter-spacing: -0.01em;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.15rem; }
+
+button {
+  cursor: pointer;
+  font-family: var(--font-sans);
+  border: none;
+  outline: none;
+  background: none;
+  transition: transform 150ms var(--ease-out-expo),
+              box-shadow 200ms var(--ease-out-expo),
+              background 200ms var(--ease-out-expo);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* ======== Keyframes ======== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseOnce {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
+/* ======== Utility classes ======== */
+.fade-in {
+  animation: fadeIn 500ms var(--ease-out-expo) both;
+}
+
+.slide-up {
+  animation: fadeIn 600ms var(--ease-out-expo) both;
+}
+
+.pulse {
+  animation: pulseOnce 500ms var(--ease-out-expo) both;
+}
+
+.shake {
+  animation: shake 400ms var(--ease-out-expo) both;
+}
+
+/* Staggered entry helper */
+.stagger-1 { animation-delay: 80ms; }
+.stagger-2 { animation-delay: 160ms; }
+.stagger-3 { animation-delay: 240ms; }
+
+/* ======== Shared card pattern ======== */
+.card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}

@@ -1,0 +1,94 @@
+.dialogue {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.line {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-light);
+  background: var(--color-bg-card);
+  cursor: pointer;
+  transition: border-color 150ms ease,
+              background 150ms ease,
+              box-shadow 150ms ease;
+  text-align: left;
+  width: 100%;
+  position: relative;
+}
+
+.line:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
+/* Badge */
+.badge {
+  position: absolute;
+  top: -7px;
+  right: 12px;
+  font-size: 0.62rem;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: var(--color-success);
+  color: #fff;
+}
+
+.badgeWrong {
+  background: var(--color-error);
+}
+
+/* Highlight (pre-submit) */
+.highlighted {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
+/* Result states */
+.correct {
+  border-color: var(--color-success);
+  background: var(--color-success-light);
+}
+
+.wrongHighlight {
+  border-color: var(--color-error);
+  background: var(--color-error-light);
+}
+
+.missed {
+  border-color: var(--color-gold);
+  background: var(--color-gold-light);
+  animation: pulseOnce 500ms var(--ease-out-expo);
+}
+
+.speaker {
+  font-weight: 700;
+  color: var(--color-accent);
+  font-size: 0.82rem;
+  min-width: fit-content;
+  white-space: nowrap;
+}
+
+.text {
+  color: var(--color-text);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.line:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+@keyframes pulseOnce {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}

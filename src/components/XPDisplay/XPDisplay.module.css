@@ -1,0 +1,37 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 180px;
+}
+
+.level {
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-gold);
+  min-width: 36px;
+}
+
+.bar {
+  flex: 1;
+  height: 12px;
+  background: var(--color-border-light);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-gold), #D4A020);
+  border-radius: 6px;
+  transition: width 600ms var(--ease-out-expo);
+}
+
+.xp {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  min-width: 50px;
+  text-align: right;
+}

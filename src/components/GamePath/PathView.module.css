@@ -1,0 +1,187 @@
+.wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 24px 64px;
+}
+
+/* Top bar */
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.topLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topRight {
+  display: flex;
+  align-items: center;
+}
+
+/* Owl area */
+.owlArea {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+  min-height: 100px;
+}
+
+/* Summary */
+.summary {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.title {
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+  margin-bottom: 2px;
+}
+
+.sub {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+/* Path container */
+.pathContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chapterRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.chapterLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.chapterDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.chapterName {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+/* Level nodes row */
+.levelRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.reversed {
+  flex-direction: row-reverse;
+}
+
+/* Individual level node */
+.node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  background: var(--color-bg-card);
+  transition: all 200ms var(--ease-out-expo);
+  cursor: pointer;
+  position: relative;
+  justify-content: center;
+}
+
+.node:hover:not(:disabled) {
+  transform: scale(1.12);
+}
+
+.nodeInner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.nodeStars {
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-gold);
+}
+
+.nodePlay {
+  font-size: 0.7rem;
+  color: var(--color-accent);
+}
+
+.nodeLock {
+  font-size: 0.45rem;
+  color: var(--color-border);
+}
+
+.nodeLabel {
+  position: absolute;
+  bottom: -16px;
+  font-size: 0.58rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* Node states */
+.nodeGold {
+  border-color: var(--color-gold);
+  background: var(--color-gold-light);
+}
+
+.nodeDone {
+  border-color: var(--color-success);
+  background: var(--color-success-light);
+}
+
+.nodeCurrent {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+  animation: nodePulse 2s var(--ease-out-expo) infinite;
+}
+
+.nodeLocked {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+@keyframes nodePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(196, 130, 94, 0); }
+  50% { box-shadow: 0 0 0 6px rgba(196, 130, 94, 0.15); }
+}
+
+/* Connector between rows */
+.connector {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0;
+}
