@@ -81,6 +81,9 @@ export default function PathView({ onSelectLevel }: Props) {
     <div className={styles.world}>
       {/* ====== SKY & ENVIRONMENT ====== */}
       <div className={styles.sky}>
+        {/* Sun rays */}
+        <div className={styles.sunRays} />
+
         {/* Clouds */}
         {CLOUDS.map((c, i) => (
           <div key={i} className={styles.cloud} style={{ top: c.top, left: c.left, transform: `scale(${c.scale})`, animationDelay: `${c.delay}s` }}>

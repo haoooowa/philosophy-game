@@ -1,5 +1,5 @@
 /* =================================================================
-   SCENE: Sky gradient with atmospheric depth
+   WORLD CONTAINER
    ================================================================= */
 .world {
   display: flex;
@@ -9,44 +9,149 @@
   margin: 0 auto;
   overflow: hidden;
   position: relative;
-  background: linear-gradient(175deg,
-    #1a1a2e 0%,       /* deep night */
-    #16213e 8%,        /* dark blue */
-    #3b5998 18%,       /* mid blue */
-    #7ba5d6 28%,       /* light blue */
-    #c4dff0 38%,       /* pale blue */
-    #fef9e7 55%,       /* warm dawn */
-    #e8f5e9 70%,       /* soft green */
-    #c8e6c9 100%);     /* meadow */
+  isolation: isolate;
+  background: #0d1b2a;
 }
 
 /* =================================================================
-   CLOUDS
+   SKY LAYER — deep atmospheric gradient
+   ================================================================= */
+.sky {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Sun */
+.sky::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255,240,210,0.5) 0%,
+    rgba(255,210,150,0.2) 20%,
+    rgba(255,180,100,0.06) 45%,
+    transparent 70%);
+  animation: sunPulse 8s ease-in-out infinite;
+}
+
+/* Sky gradient bands */
+.sky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 120% 30% at 50% 0%, #2b4f7c 0%, transparent 40%),
+    radial-gradient(ellipse 100% 25% at 50% 25%, #5b8cb8 0%, transparent 50%),
+    radial-gradient(ellipse 90% 20% at 50% 45%, #a8cde0 0%, transparent 55%),
+    radial-gradient(ellipse 100% 20% at 50% 65%, #e8dcc8 0%, transparent 60%),
+    radial-gradient(ellipse 120% 30% at 50% 85%, #c8d8a8 0%, transparent 70%),
+    radial-gradient(ellipse 140% 25% at 50% 100%, #8ab868 0%, transparent 80%);
+  opacity: 0.7;
+}
+
+@keyframes sunPulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* =================================================================
+   SUN RAYS
+   ================================================================= */
+.sunRays {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 500px;
+  background:
+    conic-gradient(
+      from 0deg,
+      transparent 0deg, rgba(255,240,200,0.06) 1deg, transparent 2deg,
+      transparent 8deg, rgba(255,240,200,0.04) 9deg, transparent 10deg,
+      transparent 18deg, rgba(255,240,200,0.05) 19deg, transparent 20deg,
+      transparent 28deg, rgba(255,240,200,0.03) 29deg, transparent 30deg,
+      transparent 40deg, rgba(255,240,200,0.06) 41deg, transparent 42deg,
+      transparent 50deg, rgba(255,240,200,0.04) 51deg, transparent 52deg,
+      transparent 60deg, rgba(255,240,200,0.05) 61deg, transparent 62deg,
+      transparent 72deg, rgba(255,240,200,0.03) 73deg, transparent 74deg,
+      transparent 85deg, rgba(255,240,200,0.06) 86deg, transparent 87deg,
+      transparent 100deg, rgba(255,240,200,0.04) 101deg, transparent 102deg,
+      transparent 115deg, rgba(255,240,200,0.05) 116deg, transparent 117deg,
+      transparent 130deg, rgba(255,240,200,0.03) 131deg, transparent 132deg,
+      transparent 145deg, rgba(255,240,200,0.06) 146deg, transparent 147deg,
+      transparent 160deg, rgba(255,240,200,0.04) 161deg, transparent 162deg,
+      transparent 180deg, rgba(255,240,200,0.05) 181deg, transparent 182deg,
+      transparent 200deg, rgba(255,240,200,0.03) 201deg, transparent 202deg,
+      transparent 220deg, rgba(255,240,200,0.06) 221deg, transparent 222deg,
+      transparent 240deg, rgba(255,240,200,0.04) 241deg, transparent 242deg,
+      transparent 260deg, rgba(255,240,200,0.05) 261deg, transparent 262deg,
+      transparent 280deg, rgba(255,240,200,0.03) 281deg, transparent 282deg,
+      transparent 300deg, rgba(255,240,200,0.06) 301deg, transparent 302deg,
+      transparent 320deg, rgba(255,240,200,0.04) 321deg, transparent 322deg,
+      transparent 340deg, rgba(255,240,200,0.05) 341deg, transparent 342deg,
+      transparent 352deg, rgba(255,240,200,0.03) 353deg, transparent 354deg,
+      transparent 360deg);
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: raySpin 120s linear infinite;
+}
+
+@keyframes raySpin {
+  to { transform: translateX(-50%) rotate(360deg); }
+}
+
+/* =================================================================
+   CLOUDS — layered, volumetric feel
    ================================================================= */
 .cloud {
   position: absolute;
   z-index: 1;
-  animation: cloudDrift 30s linear infinite;
+  animation: cloudDrift 40s linear infinite;
 }
 
 .cloudPuff,
 .cloudPuff2,
 .cloudPuff3 {
   position: absolute;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.55);
   border-radius: 50%;
-  box-shadow:
-    0 2px 20px rgba(255,255,255,0.3),
-    inset 0 -4px 10px rgba(0,0,0,0.04);
 }
 
-.cloudPuff  { width: 60px; height: 35px; top: 0; left: 0; }
-.cloudPuff2 { width: 45px; height: 28px; top: 8px; left: 20px; }
-.cloudPuff3 { width: 50px; height: 30px; top: -4px; left: 35px; }
+.cloudPuff {
+  width: 70px; height: 38px;
+  box-shadow:
+    0 4px 30px rgba(255,255,255,0.15),
+    inset 0 -6px 12px rgba(0,0,0,0.03);
+}
+
+.cloudPuff2 {
+  width: 50px; height: 32px;
+  top: 6px; left: 22px;
+  box-shadow:
+    inset 0 -4px 10px rgba(0,0,0,0.03);
+}
+
+.cloudPuff3 {
+  width: 56px; height: 34px;
+  top: -2px; left: 40px;
+  box-shadow:
+    inset 0 -5px 10px rgba(0,0,0,0.03);
+}
 
 @keyframes cloudDrift {
   0%   { transform: translateX(0); }
-  100% { transform: translateX(60px); }
+  25%  { transform: translateX(80px); }
+  50%  { transform: translateX(40px); }
+  75%  { transform: translateX(90px); }
+  100% { transform: translateX(0); }
 }
 
 /* =================================================================
@@ -57,92 +162,109 @@
   background: #fff;
   border-radius: 50%;
   z-index: 1;
-  animation: twinkle 2s ease-in-out infinite;
-  box-shadow: 0 0 4px 1px rgba(255,255,255,0.5);
+  animation: twinkle 2.5s ease-in-out infinite;
+  box-shadow: 0 0 6px 2px rgba(255,255,255,0.4);
 }
 
 @keyframes twinkle {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 0.9; transform: scale(1.4); }
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.6); }
 }
 
 /* =================================================================
-   HILLS (foreground)
+   TERRAIN — scrolls with path
    ================================================================= */
 .hills {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 50%;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
 }
 
 .hill1, .hill2, .hill3 {
   position: absolute;
-  border-radius: 50%;
 }
 
+/* Left hill */
 .hill1 {
-  bottom: -30%;
-  left: -40%;
-  width: 140%;
-  height: 60%;
-  background: linear-gradient(180deg, #a8d8a0 0%, #7cb878 30%, #5a9e54 100%);
-  box-shadow: inset 0 10px 30px rgba(255,255,255,0.15);
+  bottom: 15%;
+  left: -60%;
+  width: 200%;
+  height: 70%;
+  border-radius: 50%;
+  background: linear-gradient(175deg,
+    rgba(140,190,120,0.3) 0%,
+    rgba(100,160,80,0.2) 50%,
+    rgba(70,120,50,0.15) 100%);
+  box-shadow: inset 0 20px 60px rgba(255,255,255,0.06);
 }
 
+/* Right hill */
 .hill2 {
-  bottom: -20%;
-  left: -20%;
-  width: 120%;
-  height: 45%;
-  background: linear-gradient(180deg, #b8e0b0 0%, #8cc888 40%, #6aaa62 100%);
-  box-shadow: inset 0 8px 24px rgba(255,255,255,0.12);
+  bottom: 8%;
+  right: -50%;
+  width: 180%;
+  height: 60%;
+  border-radius: 50%;
+  background: linear-gradient(185deg,
+    rgba(150,200,130,0.25) 0%,
+    rgba(110,170,90,0.18) 50%,
+    rgba(80,130,60,0.12) 100%);
+  box-shadow: inset 0 15px 40px rgba(255,255,255,0.05);
 }
 
+/* Center hill */
 .hill3 {
-  bottom: -10%;
-  right: -30%;
-  width: 100%;
-  height: 35%;
-  background: linear-gradient(180deg, #c8e8c0 0%, #98d090 50%, #78b870 100%);
-  box-shadow: inset 0 6px 18px rgba(255,255,255,0.1);
+  bottom: 0;
+  left: -30%;
+  width: 160%;
+  height: 50%;
+  border-radius: 50%;
+  background: linear-gradient(180deg,
+    rgba(160,210,140,0.2) 0%,
+    rgba(120,180,100,0.15) 50%,
+    rgba(90,140,70,0.1) 100%);
+  box-shadow: inset 0 10px 30px rgba(255,255,255,0.05);
 }
 
 /* =================================================================
-   GREEK COLUMNS
+   GREEK COLUMNS — more architectural detail
    ================================================================= */
 .columnLeft, .columnRight {
   position: absolute;
-  bottom: 0;
-  z-index: 1;
+  bottom: 5%;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
+  opacity: 0.35;
+  transition: opacity 0.4s ease;
 }
 
-.columnLeft  { left: 8px; }
-.columnRight { right: 8px; }
+.columnLeft  { left: 6px; }
+.columnRight { right: 6px; }
 
-.columnBase, .columnCapital {
-  width: 24px;
-  height: 10px;
-  background: linear-gradient(180deg, #e8e0d8, #d4ccc0);
-  border-radius: 3px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.5);
+.columnBase {
+  width: 22px;
+  height: 8px;
+  background: linear-gradient(180deg, #e8e0d6, #d4ccc0);
+  border-radius: 2px;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.08);
 }
 
 .columnShaft {
-  width: 14px;
-  height: 60px;
-  background: linear-gradient(90deg, #e0d8cc, #f0e8e0 20%, #f5efe8 50%, #e8e0d4 80%, #d8d0c0);
-  border-radius: 2px;
+  width: 12px;
+  height: 50px;
+  background: linear-gradient(90deg,
+    #ddd5c8 0%,
+    #f0eae2 25%,
+    #f8f4ee 50%,
+    #ece4da 75%,
+    #d8d0c4 100%);
+  border-radius: 1px;
   box-shadow:
-    2px 0 6px rgba(0,0,0,0.08),
-    inset 1px 0 2px rgba(255,255,255,0.6),
-    inset -1px 0 2px rgba(0,0,0,0.05);
+    1px 0 3px rgba(0,0,0,0.06),
+    inset 1px 0 1px rgba(255,255,255,0.5);
   position: relative;
 }
 
@@ -150,62 +272,62 @@
 .columnShaft::after {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
+  left: 0; right: 0;
   height: 1px;
-  background: rgba(0,0,0,0.08);
+  background: rgba(0,0,0,0.06);
 }
 
-.columnShaft::before { top: 20px; }
-.columnShaft::after  { top: 40px; }
+.columnShaft::before { top: 16px; }
+.columnShaft::after  { top: 32px; }
+
+.columnCapital {
+  width: 22px;
+  height: 8px;
+  background: linear-gradient(180deg, #f0e8e0, #e0d8cc);
+  border-radius: 2px;
+  box-shadow: 0 -1px 3px rgba(0,0,0,0.06);
+}
 
 /* =================================================================
-   MARBLE PEDESTAL + OWL
+   MARBLE PEDESTAL + OWL (normal flow — no clipping)
    ================================================================= */
 .pedestalWrap {
-  position: relative;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 8px 0 12px;
-  z-index: 2;
+  margin: 16px 0 6px;
+  z-index: 3;
+}
+
+.owlOnPedestal {
+  /* owl renders normally */
 }
 
 .pedestal {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: -4px;
 }
 
 .pedestalTop {
-  width: 120px;
-  height: 10px;
-  background: linear-gradient(180deg, #f5efe8, #e8e0d4);
-  border-radius: 3px 3px 0 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);
+  width: 90px; height: 5px;
+  background: linear-gradient(180deg, #faf6f0, #e8e0d4);
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .pedestalBody {
-  width: 100px;
-  height: 16px;
+  width: 76px; height: 8px;
   background: linear-gradient(90deg, #e8e0d4, #f5efe8 20%, #faf6f0 50%, #f0e8dc 80%, #e0d8cc);
-  box-shadow:
-    inset 2px 0 4px rgba(255,255,255,0.4),
-    inset -2px 0 4px rgba(0,0,0,0.06);
 }
 
 .pedestalBottom {
-  width: 130px;
-  height: 8px;
+  width: 100px; height: 5px;
   background: linear-gradient(180deg, #e8e0d4, #d8d0c0);
-  border-radius: 0 0 3px 3px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.12), inset 0 -1px 2px rgba(0,0,0,0.06);
-}
-
-.owlOnPedestal {
-  position: absolute;
-  bottom: 26px;
+  border-radius: 2px;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.06);
 }
 
 /* =================================================================
@@ -218,7 +340,6 @@
   padding: 14px 18px 8px;
   gap: 8px;
   flex-shrink: 0;
-  position: relative;
   z-index: 3;
 }
 
@@ -235,7 +356,7 @@
   font-size: 0.75rem;
   font-weight: 900;
   color: #C8960C;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
 
 /* =================================================================
@@ -244,50 +365,44 @@
 .progressStrip {
   padding: 0 18px 6px;
   flex-shrink: 0;
-  position: relative;
   z-index: 2;
 }
 
 .progressTrack {
-  height: 8px;
-  background: rgba(255,255,255,0.3);
-  border-radius: 4px;
+  height: 6px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 3px;
   overflow: hidden;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);
 }
 
 .progressFill {
   height: 100%;
   background: linear-gradient(90deg, #58CC02, #8CE048);
-  border-radius: 4px;
+  border-radius: 3px;
   transition: width 0.8s var(--ease-out);
-  box-shadow: 0 0 10px rgba(88,204,2,0.4);
+  box-shadow: 0 0 8px rgba(88,204,2,0.3);
 }
 
 .progressNums {
   display: flex;
   justify-content: space-between;
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: rgba(255,255,255,0.7);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
 }
 
-.progressNums span {
-  display: flex;
-  align-items: baseline;
-  gap: 2px;
-}
-
-.progressNums small { font-size: 0.58rem; opacity: 0.6; }
+.progressNums span { display: flex; align-items: baseline; gap: 2px; }
+.progressNums small { font-size: 0.55rem; opacity: 0.5; }
 
 /* =================================================================
    CHAPTER TABS
    ================================================================= */
 .chapterTabs {
   display: flex;
-  gap: 6px;
-  padding: 4px 18px 10px;
+  gap: 5px;
+  padding: 4px 18px 8px;
   overflow-x: auto;
   flex-shrink: 0;
   z-index: 2;
@@ -298,44 +413,43 @@
 
 .chapterTab {
   flex-shrink: 0;
-  padding: 5px 14px;
+  padding: 4px 12px;
   border-radius: 99px;
-  border: 1.5px solid rgba(255,255,255,0.3);
-  background: rgba(255,255,255,0.25);
+  border: 1.5px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.15);
   backdrop-filter: blur(8px);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.75);
   white-space: nowrap;
   transition: all 0.2s ease;
 }
 
 .chapterTabActive {
-  background: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.75);
   color: #2B1F14;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
-.chapterTabDone { opacity: 0.5; }
+.chapterTabDone { opacity: 0.4; }
 
 /* =================================================================
-   PATH
+   SCROLLABLE PATH
    ================================================================= */
 .pathScroll {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0 0 100px;
+  padding: 0 0 120px;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  position: relative;
   z-index: 2;
 }
 .pathScroll::-webkit-scrollbar { display: none; }
 
 .pathTrack {
   position: relative;
-  min-height: 2200px;
+  min-height: 2300px;
   width: 100%;
 }
 
@@ -348,12 +462,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  transition: opacity 0.5s ease, transform 0.5s var(--ease-out), filter 0.5s ease;
+  gap: 7px;
+  transition: opacity 0.6s ease, transform 0.5s var(--ease-out), filter 0.6s ease;
 }
 
 .inView  { opacity: 1; filter: none; }
-.outView { opacity: 0.06; filter: blur(4px); pointer-events: none; }
+.outView { opacity: 0.04; filter: blur(5px); pointer-events: none; }
 
 /* =================================================================
    CHAPTER BANNER
@@ -361,32 +475,30 @@
 .banner {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 16px;
+  gap: 5px;
+  padding: 4px 14px;
   border-radius: 99px;
   border: 1.5px solid;
-  background: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.8);
   backdrop-filter: blur(12px);
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--color-text);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .bannerDot {
-  width: 6px;
-  height: 6px;
+  width: 5px; height: 5px;
   border-radius: 50%;
 }
 
 /* =================================================================
-   LEVEL NODE — 3D sphere with materials
+   3D NODE — sphere with specular lighting
    ================================================================= */
 .node {
-  width: 64px;
-  height: 64px;
+  width: 62px; height: 62px;
   border-radius: 50%;
   border: none;
   display: flex;
@@ -395,34 +507,28 @@
   cursor: pointer;
   position: relative;
   transition: all 0.4s var(--ease-bounce);
-  /* Neutral state */
+  /* Neutral: stone/marble sphere */
   background:
-    radial-gradient(circle at 35% 30%, #ffffff, #f0ebe4 40%, #e0d8cc 100%);
+    radial-gradient(circle at 35% 28%, #ffffff 0%, #f6f2ec 25%, #e8e0d4 55%, #d8cec0 100%);
   box-shadow:
-    0 6px 20px rgba(0,0,0,0.12),
-    inset 0 -3px 6px rgba(0,0,0,0.06),
-    inset 0 2px 4px rgba(255,255,255,0.6);
+    0 8px 24px rgba(0,0,0,0.14),
+    0 2px 4px rgba(0,0,0,0.08),
+    inset 0 -4px 8px rgba(0,0,0,0.06),
+    inset 0 3px 6px rgba(255,255,255,0.5);
 }
 
-.node:hover:not(:disabled) {
-  transform: scale(1.14);
-}
+.node:hover:not(:disabled) { transform: scale(1.14); }
+.node:active:not(:disabled) { transform: scale(0.92); }
 
-.node:active:not(:disabled) {
-  transform: scale(0.92);
-}
-
-/* Glossy specular highlight */
+/* Specular highlight */
 .nodeShine {
   position: absolute;
-  top: 8px;
-  left: 12px;
-  right: 12px;
-  height: 20px;
+  top: 7px; left: 11px; right: 11px;
+  height: 22px;
   border-radius: 50%;
   background: radial-gradient(ellipse at center,
-    rgba(255,255,255,0.6) 0%,
-    rgba(255,255,255,0.1) 100%);
+    rgba(255,255,255,0.55) 0%,
+    rgba(255,255,255,0.05) 100%);
   pointer-events: none;
 }
 
@@ -430,14 +536,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-  position: relative;
-  z-index: 1;
+  width: 100%; height: 100%;
+  position: relative; z-index: 1;
 }
 
 .nodeStars {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #C8960C;
   font-weight: 900;
   letter-spacing: -2px;
@@ -446,78 +550,75 @@
 
 .nodeGo {
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 900;
   color: #FF6B35;
-  text-shadow: 0 1px 2px rgba(255,107,53,0.3);
-  animation: goBounce 1.5s ease-in-out infinite;
+  text-shadow: 0 1px 2px rgba(255,107,53,0.25);
+  animation: goBounce 1.4s ease-in-out infinite;
 }
 
 .nodeId {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 800;
-  color: #9C8C7C;
+  color: #a89888;
 }
 
-/* ---- Gold (3-star complete) ---- */
+/* Gold complete */
 .nodeGold {
   background:
-    radial-gradient(circle at 35% 30%, #fffef5, #fff3c0 40%, #e8d070 100%);
+    radial-gradient(circle at 35% 28%, #fffef8 0%, #fff6d0 25%, #f0d870 55%, #d8b840 100%);
   box-shadow:
-    0 6px 24px rgba(200,160,50,0.3),
-    0 0 0 5px rgba(255,200,80,0.12),
-    inset 0 -3px 6px rgba(180,130,20,0.1),
-    inset 0 2px 4px rgba(255,255,255,0.5);
+    0 8px 28px rgba(200,150,40,0.3),
+    0 0 0 5px rgba(255,200,60,0.12),
+    inset 0 -4px 8px rgba(180,130,20,0.12),
+    inset 0 3px 6px rgba(255,255,255,0.4);
 }
 
-/* ---- Green (completed) ---- */
+/* Green complete */
 .nodeDone {
   background:
-    radial-gradient(circle at 35% 30%, #f8fff5, #d8f0c8 40%, #a8d888 100%);
+    radial-gradient(circle at 35% 28%, #fafff6 0%, #e0f4d0 25%, #b8e098 55%, #88c868 100%);
   box-shadow:
-    0 6px 20px rgba(100,180,60,0.25),
+    0 8px 24px rgba(100,180,60,0.25),
     0 0 0 4px rgba(120,200,80,0.1),
-    inset 0 -3px 6px rgba(80,140,40,0.1),
-    inset 0 2px 4px rgba(255,255,255,0.5);
+    inset 0 -4px 8px rgba(80,140,40,0.1),
+    inset 0 3px 6px rgba(255,255,255,0.4);
 }
 
-/* ---- Current (pulsing glow) ---- */
+/* Current level */
 .nodeNow {
-  width: 74px;
-  height: 74px;
+  width: 72px; height: 72px;
   background:
-    radial-gradient(circle at 35% 30%, #ffffff, #fff5ee 35%, #ffe0cc 100%);
+    radial-gradient(circle at 35% 28%, #ffffff 0%, #fff8f2 22%, #ffe8d4 50%, #f0c0a0 100%);
   box-shadow:
-    0 10px 40px rgba(255,107,53,0.35),
-    0 0 0 8px rgba(255,107,53,0.1),
-    0 0 60px rgba(255,107,53,0.12),
-    inset 0 -4px 8px rgba(200,80,30,0.08),
-    inset 0 2px 6px rgba(255,255,255,0.6);
+    0 12px 48px rgba(255,107,53,0.35),
+    0 0 0 9px rgba(255,107,53,0.08),
+    0 0 80px rgba(255,107,53,0.1),
+    inset 0 -5px 10px rgba(200,80,30,0.08),
+    inset 0 4px 8px rgba(255,255,255,0.5);
   animation: currentGlow 2.2s ease-in-out infinite;
 }
 
-.nodeNow .nodeGo {
-  font-size: 0.95rem;
-}
+.nodeNow .nodeGo { font-size: 0.92rem; }
 
-/* ---- Locked ---- */
+/* Locked */
 .nodeLock {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.12);
   box-shadow: none;
-  opacity: 0.35;
+  opacity: 0.3;
   cursor: default;
 }
 .nodeLock .nodeShine { display: none; }
 
-/* ---- Label ---- */
+/* Label */
 .nodeLabel {
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   font-weight: 700;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255,255,255,0.6);
   text-align: center;
   max-width: 80px;
-  line-height: 1.3;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  line-height: 1.25;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
 /* =================================================================
@@ -525,12 +626,11 @@
    ================================================================= */
 .bottomBar {
   display: flex;
-  background: rgba(255,255,255,0.85);
+  background: rgba(20,25,35,0.9);
   backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(255,255,255,0.05);
   flex-shrink: 0;
   padding-bottom: env(safe-area-inset-bottom, 0);
-  position: relative;
   z-index: 3;
 }
 
@@ -541,14 +641,14 @@
   align-items: center;
   gap: 2px;
   padding: 8px 0;
-  font-size: 0.58rem;
+  font-size: 0.56rem;
   font-weight: 700;
-  color: #B8A89C;
+  color: rgba(255,255,255,0.3);
   letter-spacing: 0.02em;
 }
 
 .tabOn {
-  color: #FF6B35;
+  color: #FF8C52;
 }
 
 /* =================================================================
@@ -557,19 +657,19 @@
 @keyframes currentGlow {
   0%, 100% {
     box-shadow:
-      0 10px 40px rgba(255,107,53,0.35),
-      0 0 0 8px rgba(255,107,53,0.1),
-      0 0 60px rgba(255,107,53,0.12);
+      0 12px 48px rgba(255,107,53,0.35),
+      0 0 0 9px rgba(255,107,53,0.08),
+      0 0 80px rgba(255,107,53,0.1);
   }
   50% {
     box-shadow:
-      0 10px 50px rgba(255,107,53,0.5),
-      0 0 0 18px rgba(255,107,53,0),
-      0 0 80px rgba(255,107,53,0.2);
+      0 14px 56px rgba(255,107,53,0.5),
+      0 0 0 20px rgba(255,107,53,0),
+      0 0 100px rgba(255,107,53,0.18);
   }
 }
 
 @keyframes goBounce {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.12); }
+  50% { transform: scale(1.1); }
 }
