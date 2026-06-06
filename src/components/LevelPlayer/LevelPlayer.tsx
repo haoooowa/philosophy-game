@@ -159,7 +159,6 @@ export default function LevelPlayer({ levelId, onBack, onNextLevel }: Props) {
           mood={owlMood}
           size="md"
           message={owlMessage || undefined}
-          speaking={!!owlMessage}
         />
       </div>
 

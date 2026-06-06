@@ -1,13 +1,11 @@
-.wrapper {
-  margin-top: 6px;
-}
+.wrapper { margin-top: 4px; }
 
 .title {
-  font-family: var(--font-sans);
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 800;
   color: var(--color-text-muted);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -15,7 +13,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 8px;
 }
 
@@ -24,44 +22,41 @@
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  padding: 14px 10px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-card);
-  transition: border-color 150ms ease,
-              background 150ms ease;
+  padding: 12px 8px;
+  border-radius: 14px;
+  border: 2px solid var(--color-border-light);
+  background: #fff;
+  transition: all 0.15s ease;
   text-align: center;
   position: relative;
 }
 
 .btn:hover:not(:disabled) {
-  border-color: var(--color-text);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 0 rgba(0,0,0,0.06);
 }
 
-/* Abbreviation icon */
 .icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 900;
   color: var(--color-text-muted);
-  background: var(--color-bg-warm);
-  margin-bottom: 2px;
+  background: var(--color-border-light);
 }
 
 .selected {
-  border-color: var(--color-text);
-  background: var(--color-bg-warm);
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
 }
-
 .selected .icon {
-  background: var(--color-text);
+  background: var(--color-primary);
   color: #fff;
 }
 
@@ -69,7 +64,6 @@
   border-color: var(--color-success);
   background: var(--color-success-light);
 }
-
 .correct .icon {
   background: var(--color-success);
   color: #fff;
@@ -78,50 +72,39 @@
 .wrong {
   border-color: var(--color-error);
   background: var(--color-error-light);
-  opacity: 0.75;
+  opacity: 0.7;
 }
-
 .wrong .icon {
   background: var(--color-error);
   color: #fff;
 }
 
-.dimmed {
-  opacity: 0.35;
-}
+.dimmed { opacity: 0.3; }
 
 .name {
-  font-weight: 700;
-  font-size: 0.82rem;
+  font-weight: 800;
+  font-size: 0.8rem;
   color: var(--color-text);
-  letter-spacing: -0.01em;
 }
 
 .desc {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--color-text-muted);
   line-height: 1.4;
 }
 
-/* Result tags */
 .resultTag {
   position: absolute;
-  top: -6px;
+  top: -7px;
   right: 6px;
-  font-size: 0.58rem;
+  font-size: 0.55rem;
   padding: 1px 6px;
-  border-radius: 999px;
-  font-weight: 600;
+  border-radius: 99px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
   background: var(--color-success);
   color: #fff;
 }
 
-.resultTagWrong {
-  background: var(--color-error);
-}
-
-.btn:disabled {
-  cursor: default;
-}
+.resultTagWrong { background: var(--color-error); }
+.btn:disabled { cursor: default; }

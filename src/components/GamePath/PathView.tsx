@@ -4,7 +4,6 @@ import { CHAPTERS } from '../../data/chapters';
 import { useGameStore } from '../../store/gameStore';
 import OwlMascot from '../Mascot/OwlMascot';
 import HeartsBar from '../HeartsBar/HeartsBar';
-import XPDisplay from '../XPDisplay/XPDisplay';
 import StreakBadge from '../StreakBadge/StreakBadge';
 import styles from './PathView.module.css';
 
@@ -12,168 +11,197 @@ interface Props {
   onSelectLevel: (levelId: number) => void;
 }
 
-// Build a single snake path: chapter rows alternate left-to-right / right-to-left
-function buildPath() {
-  const nodes: { levelId: number; chapterId: number; x: number; y: number }[] = [];
-  let y = 0;
-
+// Build a winding path: 9 chapters, each is a row of 9 levels
+function buildSnake() {
+  const rows: { levelId: number; chapterId: number; col: number; row: number }[] = [];
   for (let ch = 1; ch <= 9; ch++) {
     const levels = ALL_LEVELS.filter(l => l.chapter === ch);
     const reversed = ch % 2 === 0;
     const ordered = reversed ? [...levels].reverse() : levels;
-
-    ordered.forEach((level, i) => {
-      nodes.push({
-        levelId: level.id,
-        chapterId: ch,
-        x: i,        // column within the row (0-8)
-        y,           // row index
-      });
+    ordered.forEach((lv, i) => {
+      rows.push({ levelId: lv.id, chapterId: ch, col: i, row: ch - 1 });
     });
-    y++;
   }
-  return nodes;
+  return rows;
 }
 
 export default function PathView({ onSelectLevel }: Props) {
   const {
-    isLevelUnlocked, isLevelCompleted, getStars, progress,
+    isLevelUnlocked, isLevelCompleted, getStars,
     hearts, maxHearts, xp, playerLevel, getXPToNextLevel,
     streak, owlMood, owlMessage, setOwlMood,
   } = useGameStore();
 
-  const pathNodes = useMemo(() => buildPath(), []);
+  const nodes = useMemo(() => buildSnake(), []);
   const scrollRef = useRef<HTMLDivElement>(null);
   const currentRef = useRef<HTMLDivElement>(null);
 
-  // Find the first uncompleted level as "current"
+  // Find current (first unlocked & uncompleted)
   const currentLevelId = useMemo(() => {
-    const firstUncompleted = ALL_LEVELS.find(l => !isLevelCompleted(l.id) && isLevelUnlocked(l.id));
-    return firstUncompleted?.id ?? progress.currentLevel;
-  }, [progress.currentLevel, isLevelCompleted, isLevelUnlocked]);
+    for (const lv of ALL_LEVELS) {
+      if (isLevelUnlocked(lv.id) && !isLevelCompleted(lv.id)) return lv.id;
+    }
+    return 81;
+  }, [isLevelUnlocked, isLevelCompleted]);
 
   // Auto-scroll to current level
   useEffect(() => {
     if (currentRef.current && scrollRef.current) {
-      const container = scrollRef.current;
+      const c = scrollRef.current;
       const el = currentRef.current;
-      const offset = el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2;
-      container.scrollTo({ top: offset, behavior: 'smooth' });
+      c.scrollTo({ top: el.offsetTop - c.clientHeight / 3, behavior: 'smooth' });
     }
   }, [currentLevelId]);
 
-  const handleLevelClick = (levelId: number) => {
+  const completedCount = ALL_LEVELS.filter(l => isLevelCompleted(l.id)).length;
+  const totalStars = ALL_LEVELS.reduce((s, l) => s + getStars(l.id), 0);
+  const totalXP = xp;
+  const xpToNext = getXPToNextLevel();
+  const xpPercent = Math.min((totalXP / xpToNext) * 100, 100);
+
+  const handleClick = (levelId: number) => {
     if (!isLevelUnlocked(levelId)) return;
-    if (hearts <= 0) {
-      setOwlMood('sad', 'No hearts left!');
-      return;
-    }
+    if (hearts <= 0) { setOwlMood('sad', 'Out of hearts!'); return; }
     onSelectLevel(levelId);
   };
 
-  const completedCount = ALL_LEVELS.filter(l => isLevelCompleted(l.id)).length;
+  // Group nodes by chapter for banners
+  const chapterStarts = new Set<number>();
+  for (let ch = 1; ch <= 9; ch++) {
+    const first = ALL_LEVELS.filter(l => l.chapter === ch).sort((a, b) => a.id - b.id)[0];
+    if (first) chapterStarts.add(first.id);
+  }
 
   return (
-    <div className={styles.outer}>
-      {/* Top bar */}
+    <div className={styles.screen}>
+      {/* Top status bar */}
       <div className={styles.topBar}>
         <StreakBadge days={streak} />
-        <HeartsBar maxHearts={maxHearts} currentHearts={hearts} />
-        <XPDisplay xp={xp} level={playerLevel} xpToNext={getXPToNextLevel()} />
+        <div className={styles.heartsWrap}>
+          <HeartsBar maxHearts={maxHearts} currentHearts={hearts} />
+        </div>
+        <div className={styles.xpRing}>
+          <svg width="40" height="40" viewBox="0 0 40 40">
+            <circle cx="20" cy="20" r="16" fill="none" stroke="#E8DDD2" strokeWidth="4" />
+            <circle cx="20" cy="20" r="16" fill="none" stroke="#FFB800" strokeWidth="4"
+              strokeDasharray={`${xpPercent * 1.005} ${100 - xpPercent}`}
+              strokeLinecap="round" transform="rotate(-90 20 20)" />
+          </svg>
+          <span className={styles.xpLevel}>{playerLevel}</span>
+        </div>
       </div>
 
-      {/* Owl */}
+      {/* Owl mascot */}
       <div className={styles.owlArea}>
-        <OwlMascot mood={owlMood} size="md" message={owlMessage || undefined} />
+        <OwlMascot mood={owlMood} size="lg" message={owlMessage || undefined} />
       </div>
 
-      {/* Progress header */}
-      <div className={styles.progressHeader}>
-        <span className={styles.progressCount}>{completedCount}/81</span>
+      {/* Progress */}
+      <div className={styles.progressSection}>
+        <div className={styles.progressBarOuter}>
+          <div className={styles.progressBarInner} style={{ width: `${(completedCount / 81) * 100}%` }} />
+        </div>
+        <div className={styles.progressStats}>
+          <span><strong>{completedCount}</strong> / 81 completed</span>
+          <span><strong>{totalStars}</strong> / 243 stars</span>
+        </div>
       </div>
 
-      {/* Scrollable path */}
-      <div className={styles.scrollContainer} ref={scrollRef}>
+      {/* Path - scrollable */}
+      <div className={styles.pathScroll} ref={scrollRef}>
         <div className={styles.pathTrack}>
-          {/* Continuous vertical connector line */}
-          <div className={styles.connectorLine} />
+          {/* Background road */}
+          <div className={styles.road} />
 
-          {pathNodes.map((node) => {
-            const chapter = CHAPTERS[node.chapterId - 1];
+          {nodes.map((node) => {
             const level = ALL_LEVELS.find(l => l.id === node.levelId)!;
             const unlocked = isLevelUnlocked(node.levelId);
             const completed = isLevelCompleted(node.levelId);
             const stars = getStars(node.levelId);
             const isCurrent = node.levelId === currentLevelId;
+            const isStart = chapterStarts.has(node.levelId);
+            const chapter = CHAPTERS[node.chapterId - 1];
 
-            // Show chapter banner at the first level of each chapter
-            const isFirstInChapter = ALL_LEVELS
-              .filter(l => l.chapter === node.chapterId)
-              .sort((a, b) => a.id - b.id)[0]?.id === node.levelId;
+            // Snake offset
+            const colOffset = (node.col - 4) * 48;
+            const rowOffset = node.row * 140;
 
-            // Determine visibility: show levels around current ± a window
-            const levelIdx = ALL_LEVELS.findIndex(l => l.id === node.levelId);
-            const currentIdx = ALL_LEVELS.findIndex(l => l.id === currentLevelId);
-            const distance = Math.abs(levelIdx - currentIdx);
-            const inWindow = distance <= 6;
-
-            // Calculate horizontal offset (snake path)
-            const col = node.x;
-            const maxCol = 8;
-            const offsetPx = ((col - maxCol / 2) / (maxCol / 2)) * 140;
-
-            // Node styling
-            let nodeClass = styles.node;
-            if (completed && stars === 3) nodeClass += ` ${styles.nodeGold}`;
-            else if (completed) nodeClass += ` ${styles.nodeDone}`;
-            else if (isCurrent) nodeClass += ` ${styles.nodeCurrent}`;
-            else if (!unlocked) nodeClass += ` ${styles.nodeLocked}`;
+            // Visibility
+            const idx = ALL_LEVELS.findIndex(l => l.id === node.levelId);
+            const curIdx = ALL_LEVELS.findIndex(l => l.id === currentLevelId);
+            const dist = Math.abs(idx - curIdx);
+            const inView = dist <= 8;
 
             return (
               <div
                 key={node.levelId}
-                className={`${styles.nodeWrapper} ${inWindow ? '' : styles.nodeHidden}`}
-                style={{ '--node-offset': `${offsetPx}px` } as React.CSSProperties}
+                className={`${styles.nodeWrapper} ${inView ? styles.inView : styles.outView}`}
+                style={{
+                  transform: `translateX(${colOffset}px)`,
+                  top: `${rowOffset + node.col * 4}px`,
+                }}
                 ref={isCurrent ? currentRef : undefined}
               >
-                {/* Chapter banner */}
-                {isFirstInChapter && (
-                  <div className={styles.chapterBanner}>
-                    <span className={styles.chapterDot} style={{ backgroundColor: chapter.color }} />
-                    <span className={styles.chapterLabel}>{chapter.title}</span>
+                {/* Chapter start banner */}
+                {isStart && (
+                  <div className={styles.chapterSign} style={{ borderColor: chapter.color }}>
+                    <span className={styles.chapterSignDot} style={{ background: chapter.color }} />
+                    {chapter.title}
                   </div>
                 )}
 
-                {/* Level node */}
+                {/* Connector line to previous */}
+                {idx > 0 && (
+                  <div className={styles.connector} style={{
+                    transform: `rotate(${node.chapterId % 2 === 0 ? '15deg' : '-15deg'})`,
+                  }} />
+                )}
+
+                {/* The node */}
                 <button
-                  className={nodeClass}
-                  onClick={() => handleLevelClick(node.levelId)}
+                  className={`
+                    ${styles.node}
+                    ${completed && stars === 3 ? styles.nodeGold : ''}
+                    ${completed && stars < 3 ? styles.nodeDone : ''}
+                    ${isCurrent ? styles.nodeNow : ''}
+                    ${!unlocked ? styles.nodeLock : ''}
+                  `}
+                  onClick={() => handleClick(node.levelId)}
                   disabled={!unlocked}
                   type="button"
-                  style={isCurrent ? {
-                    borderColor: chapter.color,
-                    boxShadow: `0 0 0 6px ${chapter.color}20`,
-                  } : undefined}
+                  style={isCurrent ? { borderColor: chapter.color } : undefined}
                 >
-                  {completed ? (
-                    <span className={styles.nodeIcon} style={{ color: stars === 3 ? 'var(--color-gold)' : 'var(--color-success)' }}>
-                      {stars === 3 ? '3' : stars === 2 ? '2' : '1'}
-                    </span>
-                  ) : isCurrent ? (
-                    <span className={styles.nodePlay}>&#9654;</span>
-                  ) : (
-                    <span className={styles.nodeDot}>&#183;</span>
-                  )}
-
-                  <span className={styles.nodeLabel}>
-                    <span className={styles.nodeNum}>{node.levelId}</span>
-                    <span className={styles.nodeTitle}>{level.title}</span>
+                  <span className={styles.nodeInner}>
+                    {completed ? (
+                      <span className={styles.nodeStar}>
+                        {'*'.repeat(stars)}
+                      </span>
+                    ) : isCurrent ? (
+                      <span className={styles.nodeGo}>GO</span>
+                    ) : (
+                      <span className={styles.nodeWait}>{node.levelId}</span>
+                    )}
                   </span>
                 </button>
+
+                {/* Label below node */}
+                <span className={styles.nodeName}>{level.title}</span>
               </div>
             );
           })}
         </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div className={styles.bottomBar}>
+        <button className={`${styles.bottomTab} ${styles.bottomTabActive}`}>
+          <span className={styles.bottomIcon}>P</span>
+          <span>Path</span>
+        </button>
+        <button className={styles.bottomTab}>
+          <span className={styles.bottomIcon}>S</span>
+          <span>Stats</span>
+        </button>
       </div>
     </div>
   );

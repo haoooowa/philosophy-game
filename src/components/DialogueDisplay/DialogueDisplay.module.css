@@ -7,36 +7,35 @@
 .line {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 10px;
   padding: 14px 16px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border-light);
-  background: var(--color-bg-card);
+  border-radius: 16px;
+  border: 2px solid var(--color-border-light);
+  background: #fff;
   cursor: pointer;
-  transition: border-color 150ms ease,
-              background 150ms ease,
-              box-shadow 150ms ease;
+  transition: all 0.15s ease;
   text-align: left;
   width: 100%;
   position: relative;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.04);
 }
 
 .line:hover:not(:disabled) {
-  border-color: var(--color-accent);
-  background: var(--color-accent-light);
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  transform: translateY(-1px);
 }
 
-/* Badge */
 .badge {
   position: absolute;
-  top: -7px;
+  top: -8px;
   right: 12px;
-  font-size: 0.62rem;
-  padding: 2px 7px;
-  border-radius: 999px;
-  font-weight: 600;
+  font-size: 0.58rem;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   background: var(--color-success);
   color: #fff;
 }
@@ -45,13 +44,12 @@
   background: var(--color-error);
 }
 
-/* Highlight (pre-submit) */
 .highlighted {
-  border-color: var(--color-accent);
-  background: var(--color-accent-light);
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  box-shadow: 0 0 0 4px rgba(255,107,53,0.1);
 }
 
-/* Result states */
 .correct {
   border-color: var(--color-success);
   background: var(--color-success-light);
@@ -65,22 +63,21 @@
 .missed {
   border-color: var(--color-gold);
   background: var(--color-gold-light);
-  animation: pulseOnce 500ms var(--ease-out-expo);
+  animation: pulseOnce 0.6s ease;
 }
 
 .speaker {
-  font-weight: 700;
-  color: var(--color-accent);
-  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  font-size: 0.8rem;
   min-width: fit-content;
   white-space: nowrap;
 }
 
 .text {
   color: var(--color-text);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   line-height: 1.6;
-  flex: 1;
 }
 
 .line:disabled {
@@ -90,5 +87,5 @@
 
 @keyframes pulseOnce {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  50% { opacity: 0.65; }
 }

@@ -1,145 +1,94 @@
-.container {
-  position: relative;
+.wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 500ms var(--ease-out-expo),
-              transform 500ms var(--ease-out-expo);
+  animation: owlEnter 0.5s var(--ease-bounce) both;
 }
 
-.enter {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.sm { transform: scale(0.7) translateY(16px); }
-.sm.enter { transform: scale(0.7) translateY(0); }
-.lg { transform: scale(1.3) translateY(16px); }
-.lg.enter { transform: scale(1.3) translateY(0); }
+.sm { transform: scale(0.7); }
+.lg { transform: scale(1.4); }
 
 .owl {
-  transition: transform 300ms var(--ease-out-expo);
-}
-
-/* Mood animations */
-.mood-idle .owl {
-  animation: idleBob 3s ease-in-out infinite;
-}
-
-.mood-happy {
-  animation: happyJump 500ms var(--ease-out-expo);
-}
-
-.mood-excited {
-  animation: excitedBounce 400ms var(--ease-out-expo);
-}
-
-.mood-sad .owl {
-  transform: scale(0.92);
-  transition: transform 400ms ease;
-}
-
-.mood-thinking .owl {
-  animation: thinkingTilt 2s ease-in-out infinite;
-}
-
-.mood-encourage .owl {
-  animation: encourageNod 1s ease-in-out;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
 }
 
 /* Speech bubble */
 .bubble {
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 8px 14px;
-  max-width: 200px;
-  opacity: 0;
-  transition: opacity 250ms ease, transform 250ms ease;
-  pointer-events: none;
-  z-index: 10;
-  white-space: nowrap;
+  background: #fff;
+  border: 2px solid #E8DDD2;
+  border-radius: 16px;
+  padding: 8px 16px;
+  margin-bottom: 4px;
+  position: relative;
+  animation: bubbleIn 0.4s var(--ease-bounce) both;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.06);
 }
 
 .bubble::after {
   content: '';
   position: absolute;
-  bottom: -6px;
+  bottom: -8px;
   left: 50%;
   transform: translateX(-50%) rotate(45deg);
-  width: 10px;
-  height: 10px;
-  background: var(--color-bg-card);
-  border-right: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-right: 2px solid #E8DDD2;
+  border-bottom: 2px solid #E8DDD2;
 }
 
-.bubbleShow {
-  opacity: 1;
-  transform: translateX(-50%) translateY(-6px);
+.bubbleExcited {
+  background: #FFF8E0;
+  border-color: #FFB800;
+  animation: bubblePop 0.3s var(--ease-bounce) both;
 }
 
 .bubble p {
   font-size: 0.78rem;
-  color: var(--color-text);
-  line-height: 1.4;
-  font-weight: 500;
+  font-weight: 700;
+  color: #2B1F14;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+/* Wing flap animation */
+.wingFlap {
+  animation: flap 0.3s ease-in-out 2;
+  transform-origin: center center;
 }
 
 /* Sparkle */
 .sparkle {
-  fill: var(--color-gold);
-  animation: sparkleFloat 1.5s ease-in-out infinite;
+  fill: #FFB800;
+  animation: sparkleFloat 1s ease-in-out infinite;
   opacity: 0;
 }
+.sparkle:nth-child(2) { animation-delay: 0.3s; }
+.sparkle:nth-child(3) { animation-delay: 0.6s; }
 
-.sparkle:nth-child(2) {
-  animation-delay: 0.5s;
+@keyframes owlEnter {
+  from { opacity: 0; transform: translateY(20px) scale(0.8); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Keyframes */
-@keyframes idleBob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-@keyframes happyJump {
-  0% { transform: translateY(0) scale(1); }
-  30% { transform: translateY(-10px) scale(1.1); }
-  60% { transform: translateY(-3px) scale(0.97); }
-  100% { transform: translateY(0) scale(1); }
+@keyframes bubblePop {
+  0%   { transform: scale(0.9); }
+  50%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
 }
 
-@keyframes excitedBounce {
-  0% { transform: translateY(0); }
-  20% { transform: translateY(-16px); }
-  40% { transform: translateY(0); }
-  60% { transform: translateY(-6px); }
-  80% { transform: translateY(0); }
-  100% { transform: translateY(0); }
-}
-
-@keyframes thinkingTilt {
+@keyframes flap {
   0%, 100% { transform: rotate(0deg); }
-  30% { transform: rotate(-5deg); }
-  70% { transform: rotate(3deg); }
-}
-
-@keyframes encourageNod {
-  0% { transform: translateY(0); }
-  40% { transform: translateY(-3px); }
-  60% { transform: translateY(0); }
-  80% { transform: translateY(-3px); }
-  100% { transform: translateY(0); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
 }
 
 @keyframes sparkleFloat {
-  0%, 100% { opacity: 0; transform: translateY(0); }
-  50% { opacity: 0.8; transform: translateY(-6px); }
+  0%, 100% { opacity: 0; transform: translateY(0) rotate(0deg); }
+  50% { opacity: 1; transform: translateY(-8px) rotate(20deg); }
 }
