@@ -1,166 +1,36 @@
-/* ======== Philosophy Game - Global Theme ======== */
 :root {
-  /* Canvas */
-  --color-bg: #FFF8F0;
+  --color-bg: #F7F6F3;
   --color-bg-card: #FFFFFF;
-  --color-bg-warm: #FFF2E8;
-
-  /* Primary - warm vibrant coral */
-  --color-primary: #FF6B35;
-  --color-primary-light: #FFF0E8;
-  --color-primary-dark: #E55925;
-
-  /* Semantic */
-  --color-success: #58CC02;
-  --color-success-light: #EEFFE0;
-  --color-error: #FF4B4B;
-  --color-error-light: #FFF0F0;
-  --color-gold: #FFB800;
-  --color-gold-light: #FFF8E0;
-  --color-blue: #1CB0F6;
-  --color-blue-light: #E5F6FF;
-
-  /* Text */
-  --color-text: #2B1F14;
-  --color-text-secondary: #7C6F64;
-  --color-text-muted: #B8A99C;
-
-  /* Structure */
-  --color-border: #E8DDD2;
-  --color-border-light: #F2EBE3;
-  --color-divider: rgba(0, 0, 0, 0.05);
-
-  /* Shadows - Duolingo uses soft, colored shadows */
-  --shadow-sm: 0 2px 0 rgba(0,0,0,0.06);
-  --shadow-md: 0 4px 0 rgba(0,0,0,0.08);
-  --shadow-lg: 0 6px 0 rgba(0,0,0,0.10);
-  --shadow-xl: 0 8px 0 rgba(0,0,0,0.12);
-  --shadow-glow: 0 0 20px rgba(255, 107, 53, 0.2);
-
-  /* Typography */
-  --font-display: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  --font-serif: 'Noto Serif SC', 'STSong', Georgia, serif;
-  --font-sans: 'Nunito', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
-
-  /* Radii */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-full: 9999px;
-
-  /* Motion */
-  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --color-bg-warm: #F9F7F4;
+  --color-text: #1B1A18;
+  --color-text-secondary: #6B6660;
+  --color-text-muted: #9C9790;
+  --color-accent: #C4825E;
+  --color-accent-light: #F8EFE9;
+  --color-gold: #C4A148;
+  --color-gold-light: #FBF5E8;
+  --color-success: #56855C;
+  --color-success-light: #EDF4EE;
+  --color-error: #B85658;
+  --color-error-light: #FBEFEF;
+  --color-border: #E8E5E0;
+  --color-border-light: #EFEDE9;
+  --font-serif: 'Noto Serif SC', Georgia, serif;
+  --font-sans: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-display: var(--font-serif);
+  --radius: 8px;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --transition: 200ms var(--ease-out);
 }
 
-/* ======== Reset ======== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body { font-family: var(--font-sans); background: var(--color-bg); color: var(--color-text); line-height: 1.6; }
+#root { min-height: 100vh; display: flex; flex-direction: column; }
+h1, h2, h3 { font-family: var(--font-serif); font-weight: 700; letter-spacing: -0.02em; }
+button { cursor: pointer; font-family: inherit; border: none; background: none; transition: all 0.15s ease; }
+button:active { transform: scale(0.97); }
 
-html {
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-}
-
-body {
-  font-family: var(--font-sans);
-  background: var(--color-bg);
-  color: var(--color-text);
-  line-height: 1.6;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-#root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-h1, h2, h3 {
-  font-family: var(--font-display);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-
-button {
-  cursor: pointer;
-  font-family: var(--font-sans);
-  border: none;
-  outline: none;
-  background: none;
-  transition: transform 0.15s var(--ease-bounce),
-              box-shadow 0.2s var(--ease-out),
-              background 0.2s var(--ease-out);
-  -webkit-tap-highlight-color: transparent;
-}
-
-button:active { transform: scale(0.95); }
-
-/* ======== Animations ======== */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeDown {
-  from { opacity: 0; transform: translateY(-12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes popIn {
-  0%   { transform: scale(0); opacity: 0; }
-  60%  { transform: scale(1.15); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes bounceIn {
-  0%   { transform: scale(0.3); opacity: 0; }
-  50%  { transform: scale(1.08); }
-  70%  { transform: scale(0.95); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.06); }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(100%); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes wiggle {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-5deg); }
-  75% { transform: rotate(5deg); }
-}
-
-/* Utility */
-.fade-in    { animation: fadeUp 0.5s var(--ease-out) both; }
-.pop-in     { animation: popIn 0.4s var(--ease-bounce) both; }
-.bounce-in  { animation: bounceIn 0.5s var(--ease-bounce) both; }
-.shake      { animation: shake 0.4s var(--ease-out) both; }
-.float      { animation: float 3s ease-in-out infinite; }
-
-/* Stagger helpers */
-.stagger-1 { animation-delay: 0.08s; }
-.stagger-2 { animation-delay: 0.16s; }
-.stagger-3 { animation-delay: 0.24s; }
-.stagger-4 { animation-delay: 0.32s; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes popIn { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+.fade-in { animation: fadeUp 0.4s var(--ease-out) both; }
+.pop-in  { animation: popIn 0.35s var(--ease-out) both; }

@@ -1,94 +1,22 @@
-.wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  animation: owlEnter 0.5s var(--ease-bounce) both;
-}
+.wrap { display: flex; flex-direction: column; align-items: center; }
 
-.sm { transform: scale(0.7); }
-.lg { transform: scale(1.4); }
-
-.owl {
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
-}
-
-/* Speech bubble */
 .bubble {
-  background: #fff;
-  border: 2px solid #E8DDD2;
-  border-radius: 16px;
-  padding: 8px 16px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 6px 14px;
   margin-bottom: 4px;
   position: relative;
-  animation: bubbleIn 0.4s var(--ease-bounce) both;
-  box-shadow: 0 2px 0 rgba(0,0,0,0.06);
 }
 
 .bubble::after {
   content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
+  position: absolute; bottom: -5px; left: 50%;
   transform: translateX(-50%) rotate(45deg);
-  width: 14px;
-  height: 14px;
-  background: #fff;
-  border-right: 2px solid #E8DDD2;
-  border-bottom: 2px solid #E8DDD2;
+  width: 8px; height: 8px;
+  background: var(--color-bg-card);
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 
-.bubbleExcited {
-  background: #FFF8E0;
-  border-color: #FFB800;
-  animation: bubblePop 0.3s var(--ease-bounce) both;
-}
-
-.bubble p {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #2B1F14;
-  white-space: nowrap;
-  letter-spacing: -0.01em;
-}
-
-/* Wing flap animation */
-.wingFlap {
-  animation: flap 0.3s ease-in-out 2;
-  transform-origin: center center;
-}
-
-/* Sparkle */
-.sparkle {
-  fill: #FFB800;
-  animation: sparkleFloat 1s ease-in-out infinite;
-  opacity: 0;
-}
-.sparkle:nth-child(2) { animation-delay: 0.3s; }
-.sparkle:nth-child(3) { animation-delay: 0.6s; }
-
-@keyframes owlEnter {
-  from { opacity: 0; transform: translateY(20px) scale(0.8); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes bubbleIn {
-  from { opacity: 0; transform: translateY(8px) scale(0.9); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes bubblePop {
-  0%   { transform: scale(0.9); }
-  50%  { transform: scale(1.08); }
-  100% { transform: scale(1); }
-}
-
-@keyframes flap {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-8deg); }
-  75% { transform: rotate(8deg); }
-}
-
-@keyframes sparkleFloat {
-  0%, 100% { opacity: 0; transform: translateY(0) rotate(0deg); }
-  50% { opacity: 1; transform: translateY(-8px) rotate(20deg); }
-}
+.bubble p { font-size: 0.72rem; font-weight: 600; color: var(--color-text); }

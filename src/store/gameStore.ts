@@ -12,6 +12,8 @@ interface GameState {
   // Gamification
   hearts: number;
   maxHearts: number;
+  lastHeartLoss: number | null;  // timestamp of last heart loss
+  heartRegenSeconds: number;     // seconds to regen one heart (300 = 5 min)
   xp: number;
   playerLevel: number;
   streak: number;
@@ -35,8 +37,11 @@ interface GameState {
   getCompletedCount: () => number;
 
   // Actions - Gamification
+  _saveGamification: () => void;
   loseHeart: () => void;
   refillHearts: () => void;
+  regenerateHearts: () => void;
+  getHeartRegenRemaining: () => number; // seconds until next heart
   addXP: (amount: number) => void;
   getXPToNextLevel: () => number;
   setOwlMood: (mood: OwlMood, message?: string) => void;
@@ -56,6 +61,8 @@ function loadFullState() {
   const defaults = {
     hearts: 5,
     maxHearts: 5,
+    lastHeartLoss: null as number | null,
+    heartRegenSeconds: 300, // 5 min per heart
     xp: 0,
     playerLevel: 1,
     streak: 0,
@@ -74,6 +81,7 @@ function loadFullState() {
 
 function saveFullState(state: {
   hearts: number;
+  lastHeartLoss: number | null;
   xp: number;
   playerLevel: number;
   streak: number;
@@ -118,6 +126,8 @@ export const useGameStore = create<GameState>((set, get) => {
     selectedChapter: 1,
     hearts: fullState.hearts,
     maxHearts: fullState.maxHearts,
+    lastHeartLoss: fullState.lastHeartLoss,
+    heartRegenSeconds: fullState.heartRegenSeconds,
     xp: fullState.xp,
     playerLevel: fullState.playerLevel,
     streak: fullState.streak,
@@ -135,12 +145,16 @@ export const useGameStore = create<GameState>((set, get) => {
         gamePhase: 'grid',
         selectedLevel: progress.currentLevel,
         hearts: fs.hearts,
+        maxHearts: fs.maxHearts,
+        lastHeartLoss: fs.lastHeartLoss,
+        heartRegenSeconds: fs.heartRegenSeconds,
         xp: fs.xp,
         playerLevel: fs.playerLevel,
         streak: fs.streak,
         lastPlayedDate: fs.lastPlayedDate,
         soundEnabled: fs.soundEnabled,
       });
+      get().regenerateHearts();
       get().checkStreak();
     },
 
@@ -194,13 +208,13 @@ export const useGameStore = create<GameState>((set, get) => {
       };
       saveProgress(freshProgress);
       const fresh: typeof fullState = {
-        hearts: 5, maxHearts: 5, xp: 0, playerLevel: 1,
+        hearts: 5, maxHearts: 5, lastHeartLoss: null, xp: 0, playerLevel: 1,
         streak: 0, lastPlayedDate: null, soundEnabled: get().soundEnabled,
       };
       saveFullState(fresh);
       set({
         progress: freshProgress, gamePhase: 'grid', selectedLevel: 1,
-        hearts: 5, xp: 0, playerLevel: 1, streak: 0, lastPlayedDate: null,
+        hearts: 5, lastHeartLoss: null, xp: 0, playerLevel: 1, streak: 0, lastPlayedDate: null,
       });
     },
 
@@ -210,20 +224,58 @@ export const useGameStore = create<GameState>((set, get) => {
     getTotalStars: () => Object.values(get().progress.completedLevels).reduce((a, b) => a + b, 0),
     getCompletedCount: () => Object.keys(get().progress.completedLevels).length,
 
+    // Helper to persist current gamification state
+    _saveGamification: () => {
+      const s = get();
+      saveFullState({ hearts: s.hearts, lastHeartLoss: s.lastHeartLoss, xp: s.xp, playerLevel: s.playerLevel, streak: s.streak, lastPlayedDate: s.lastPlayedDate, soundEnabled: s.soundEnabled });
+    },
+
     // ---- Gamification Actions ----
     loseHeart: () => {
-      const { hearts } = get();
+      const { hearts, maxHearts } = get();
       if (hearts <= 0) return;
       const newHearts = hearts - 1;
-      set({ hearts: newHearts });
-      saveFullState({ ...loadFullState(), hearts: newHearts, xp: get().xp, playerLevel: get().playerLevel, streak: get().streak, lastPlayedDate: get().lastPlayedDate, soundEnabled: get().soundEnabled });
+      const now = Date.now();
+      // Record timestamp when first heart is lost (or when below max)
+      const lastHeartLoss = hearts === maxHearts ? now : get().lastHeartLoss;
+      set({ hearts: newHearts, lastHeartLoss });
+      get()._saveGamification();
     },
 
     refillHearts: () => {
       const { maxHearts } = get();
-      set({ hearts: maxHearts });
-      const s = get();
-      saveFullState({ hearts: maxHearts, xp: s.xp, playerLevel: s.playerLevel, streak: s.streak, lastPlayedDate: s.lastPlayedDate, soundEnabled: s.soundEnabled });
+      set({ hearts: maxHearts, lastHeartLoss: null });
+      get()._saveGamification();
+    },
+
+    regenerateHearts: () => {
+      const { hearts, maxHearts, lastHeartLoss, heartRegenSeconds } = get();
+      if (hearts >= maxHearts || !lastHeartLoss) return;
+
+      const now = Date.now();
+      const elapsed = (now - lastHeartLoss) / 1000; // seconds
+      const heartsToAdd = Math.floor(elapsed / heartRegenSeconds);
+
+      if (heartsToAdd <= 0) return;
+
+      const newHearts = Math.min(hearts + heartsToAdd, maxHearts);
+      // If still below max, keep the last loss time; otherwise clear it
+      const newLastLoss = newHearts < maxHearts
+        ? lastHeartLoss + (heartsToAdd * heartRegenSeconds * 1000)
+        : null;
+
+      set({ hearts: newHearts, lastHeartLoss: newLastLoss });
+      get()._saveGamification();
+    },
+
+    getHeartRegenRemaining: () => {
+      const { hearts, maxHearts, lastHeartLoss, heartRegenSeconds } = get();
+      if (hearts >= maxHearts || !lastHeartLoss) return 0;
+
+      const now = Date.now();
+      const elapsed = (now - lastHeartLoss) / 1000;
+      const nextHeartIn = heartRegenSeconds - (elapsed % heartRegenSeconds);
+      return Math.max(0, Math.ceil(nextHeartIn));
     },
 
     addXP: (amount: number) => {
@@ -239,8 +291,7 @@ export const useGameStore = create<GameState>((set, get) => {
       }
 
       set({ xp: remainingXP, playerLevel: newLevel });
-      const s = get();
-      saveFullState({ hearts: s.hearts, xp: remainingXP, playerLevel: newLevel, streak: s.streak, lastPlayedDate: s.lastPlayedDate, soundEnabled: s.soundEnabled });
+      get()._saveGamification();
     },
 
     getXPToNextLevel: () => xpForLevel(get().playerLevel),
@@ -256,7 +307,7 @@ export const useGameStore = create<GameState>((set, get) => {
       if (!lastPlayedDate) {
         set({ streak: 1, lastPlayedDate: today });
         const s = get();
-        saveFullState({ hearts: s.hearts, xp: s.xp, playerLevel: s.playerLevel, streak: 1, lastPlayedDate: today, soundEnabled: s.soundEnabled });
+        saveFullState({ hearts: s.hearts, lastHeartLoss: s.lastHeartLoss, xp: s.xp, playerLevel: s.playerLevel, streak: 1, lastPlayedDate: today, soundEnabled: s.soundEnabled });
         return;
       }
 
@@ -271,12 +322,12 @@ export const useGameStore = create<GameState>((set, get) => {
         const newStreak = streak + 1;
         set({ streak: newStreak, lastPlayedDate: today });
         const s = get();
-        saveFullState({ hearts: s.hearts, xp: s.xp, playerLevel: s.playerLevel, streak: newStreak, lastPlayedDate: today, soundEnabled: s.soundEnabled });
+        saveFullState({ hearts: s.hearts, lastHeartLoss: s.lastHeartLoss, xp: s.xp, playerLevel: s.playerLevel, streak: newStreak, lastPlayedDate: today, soundEnabled: s.soundEnabled });
       } else if (diffDays > 1) {
         // Streak broken
         set({ streak: 1, lastPlayedDate: today });
         const s = get();
-        saveFullState({ hearts: s.hearts, xp: s.xp, playerLevel: s.playerLevel, streak: 1, lastPlayedDate: today, soundEnabled: s.soundEnabled });
+        saveFullState({ hearts: s.hearts, lastHeartLoss: s.lastHeartLoss, xp: s.xp, playerLevel: s.playerLevel, streak: 1, lastPlayedDate: today, soundEnabled: s.soundEnabled });
       }
     },
 
@@ -284,7 +335,7 @@ export const useGameStore = create<GameState>((set, get) => {
       const newVal = !get().soundEnabled;
       set({ soundEnabled: newVal });
       const s = get();
-      saveFullState({ hearts: s.hearts, xp: s.xp, playerLevel: s.playerLevel, streak: s.streak, lastPlayedDate: s.lastPlayedDate, soundEnabled: newVal });
+      saveFullState({ hearts: s.hearts, lastHeartLoss: s.lastHeartLoss, xp: s.xp, playerLevel: s.playerLevel, streak: s.streak, lastPlayedDate: s.lastPlayedDate, soundEnabled: newVal });
     },
   };
 });
